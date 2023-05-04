@@ -1,4 +1,4 @@
-name: GitLeaks
+name: Gitleaks
 
 on:
   workflow_call:
@@ -13,12 +13,15 @@ jobs:
         with:
           fetch-depth: 0
       -
-        name: Download GitLeaks
-        run: |
-          curl -LO https://github.com/zricethezav/gitleaks/releases/download/v8.15.2/gitleaks_8.15.2_linux_x64.tar.gz
-          tar zxvf gitleaks_8.15.2_linux_x64.tar.gz
-          chmod +x gitleaks
-
-      -
-        name: Scan with GitLeaks
-        run: ./gitleaks detect --redact
+        name: Scan with Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   name: Download Gitleaks
+      #   run: |
+      #     curl -LO https://github.com/zricethezav/gitleaks/releases/download/v8.15.2/gitleaks_8.15.2_linux_x64.tar.gz
+      #     tar zxvf gitleaks_8.15.2_linux_x64.tar.gz
+      #     chmod +x gitleaks
+      # -
+      #   name: Scan with Gitleaks
+      #   run: ./gitleaks detect --redact
