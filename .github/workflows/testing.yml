@@ -9,4 +9,4 @@ jobs:
     steps:
       -
         name: Test
-        run: echo ${{ env.test_var }}
+        run: echo ${ env.test_var }
