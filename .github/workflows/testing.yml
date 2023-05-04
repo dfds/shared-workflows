@@ -3,6 +3,9 @@ name: Testing
 on:
   workflow_call:
 
+env:
+  test_var: ${{ env.test_var }}
+
 jobs:
   Testing:
     runs-on: ubuntu-latest
