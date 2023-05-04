@@ -2,6 +2,10 @@ name: Testing
 
 on:
   workflow_call:
+    inputs:
+      test_var:
+        required: true
+        type: string
 
 jobs:
   Testing:
@@ -9,4 +13,4 @@ jobs:
     steps:
       -
         name: Test
-        run: echo ${ env.first_var }
+        run: echo ${{ inputs.test_var }}
