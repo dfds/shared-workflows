@@ -1,0 +1,57 @@
+name: Build and upload Go lambda to S3
+
+on:
+  workflow_call:
+    inputs:
+      role-session-name:
+        description: 'The session name for assuming the role in AWS'
+        required: true
+        type: string
+      aws-region:
+        required: false
+        type: string
+        default: 'eu-central-1'
+      go-version:
+        required: false
+        type: string
+        default: '>= 1.20.0'
+      working-directory:
+        required: true
+        type: string
+      lambda-package-name:
+        required: true
+        type: string
+      s3-location:
+        required: true
+        type: string
+    secrets:
+      role-to-assume:
+        required: true
+
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+
+jobs:
+  UploadLambda:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.role-to-assume }}
+          role-session-name: ${{ inputs.role-session-name }}
+          aws-region: ${{ inputs.aws-region }}
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ inputs.go-version }}
+      - name: Upload to S3
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          make
+          aws s3 cp ${{ inputs.lambda-package-name }} s3://${{ inputs.s3-location }}/${{ inputs.lambda-package-name }}
