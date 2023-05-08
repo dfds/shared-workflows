@@ -2,9 +2,16 @@
 
 A repository for shared action workflows, best practice for new and existing repositories.
 
+Shared workflows:
+- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
+- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
+- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
+
 ## Gitleaks
 
 Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos.
+
+[Marketplace](https://github.com/marketplace/actions/gitleaks).
 
 How to invoke this shared workflow:
 
@@ -24,6 +31,8 @@ jobs:
 
 Enforce assigning labels before merging PR's. Usefull for generating automatic changelog and release notes with [Auto release](https://github.com/dfds/shared-workflows#auto-release).
 
+[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+
 How to invoke this shared workflow:
 
 ```yaml
@@ -42,6 +51,8 @@ jobs:
 ## Auto release
 
 Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from got log. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
+
+[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
 
 How to invoke this shared workflow:
 
