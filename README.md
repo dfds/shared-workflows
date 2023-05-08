@@ -60,7 +60,7 @@ How to invoke this shared workflow:
 name: Create repository release
 
 on:
-  pull_request:
+  push:
     branches: [ "master", "main" ]
 
 jobs:
