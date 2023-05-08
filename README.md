@@ -70,3 +70,27 @@ jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/enforce-release-labels.yml@master
 ```
+
+## Build Go lambda and upload artifact to S3
+Builds a Go lambda and uploads the zip file to S3 bucket
+
+```yaml
+name: Build lambda and upload to S3
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-upload-to-s3:
+    name: build-and-upload-to-s3
+    uses: dfds/shared-workflows/.github/workflows/build-and-upload-to-s3.yml@add_lambdas_workflow
+    with:
+      role-session-name: samplesessionname #Session name
+      working-directory: ./working-directory #The working directory that includes the Makefile
+      lambda-package-name: lambda-package.zip #The lambda package name 
+      s3-location: s3-location #The S3 location to put the artifact
+    secrets:
+      role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
+```
