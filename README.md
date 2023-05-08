@@ -22,7 +22,7 @@ jobs:
 
 ## Enforce PR labels
 
-Enforce assigning labels before merging PR's. Usefull for generating automatic changelog and release notes with [Auto release](https://github.com/rymndhng/release-on-push-action).
+Enforce assigning labels before merging PR's. Usefull for generating automatic changelog and release notes with [Auto release](https://github.com/dfds/shared-workflows#auto-release).
 
 How to invoke this shared workflow:
 
@@ -41,7 +41,7 @@ jobs:
 
 ## Auto release
 
-Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from got log. Works best in conjuction with [Enforce PR labels](https://github.com/yogevbd/enforce-label-action)
+Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from got log. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
 
 How to invoke this shared workflow:
 
