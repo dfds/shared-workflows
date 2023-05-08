@@ -8,6 +8,7 @@ Shared workflows:
 - Automation
     - [Auto release](https://github.com/dfds/shared-workflows#auto-release)
     - [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
+    - [Build Go lambda and upload artifact to S3](https://github.com/dfds/shared-workflows#build-go-lambda-and-upload-artifact-to-s3)
 
 ## Gitleaks
 
@@ -72,6 +73,7 @@ jobs:
 ```
 
 ## Build Go lambda and upload artifact to S3
+
 Builds a Go lambda and uploads the zip file to S3 bucket
 
 ```yaml
@@ -79,8 +81,7 @@ name: Build lambda and upload to S3
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ "master", "main" ]
 
 jobs:
   build-and-upload-to-s3:
