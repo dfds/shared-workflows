@@ -94,3 +94,4 @@ jobs:
     secrets:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
 ```
+
