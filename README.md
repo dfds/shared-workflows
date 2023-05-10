@@ -6,6 +6,7 @@ Shared workflows:
 - Security
     - [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
     - [TFSec PR Commenter](https://github.com/dfds/shared-workflows#tfsec-pr-commenter)
+    - [TFSec with upload](https://github.com/dfds/shared-workflows#tfsec-with-upload)
 - Automation
     - [Auto release](https://github.com/dfds/shared-workflows#auto-release)
     - [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
@@ -32,9 +33,10 @@ jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/gitleaks.yml@master
 ```
+
 ### TFSec PR Commenter
 
-Add comments to pull requests where tfsec checks have failed
+Add comments to pull requests where tfsec checks have failed.
 
 [Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter).
 
@@ -52,12 +54,32 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/tfsec-pr-commenter.yml@master
 ```
 
+### TFSec with upload
+
+This Github Action will run the tfsec sarif check then add the report to the repo for upload.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload).
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run tfsec and upload
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/tfsec-upload.yml@master
+```
+
 ## Automation
 
 ### Auto release
 
 Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**.
-Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
+Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels).
 
 [Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
 
@@ -98,7 +120,7 @@ jobs:
 
 ### Build Go lambda and upload artifact to S3
 
-Builds a Go lambda and uploads the zip file to S3 bucket
+Builds a Go lambda and uploads the zip file to S3 bucket.
 
 ```yaml
 name: Build lambda and upload to S3
@@ -119,4 +141,3 @@ jobs:
     secrets:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
 ```
-
