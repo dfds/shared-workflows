@@ -4,9 +4,9 @@ A repository for shared action workflows, best practice for new and existing rep
 
 Shared workflows:
 - Security
-    - [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
-    - [TFSec PR Commenter](https://github.com/dfds/shared-workflows#tfsec-pr-commenter)
-    - [TFSec with upload](https://github.com/dfds/shared-workflows#tfsec-with-upload)
+    - [Gitleaks](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/security#gitleaks)
+    - [TFSec PR Commenter](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/security#tfsec-pr-commenter)
+    - [TFSec with upload](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/security#tfsec-with-upload)
 
 ## Security
 

@@ -4,16 +4,16 @@ A repository for shared action workflows, best practice for new and existing rep
 
 Shared workflows:
 - Automation
-    - [Auto release](https://github.com/dfds/shared-workflows#auto-release)
-    - [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
-    - [Build Go lambda and upload artifact to S3](https://github.com/dfds/shared-workflows#build-go-lambda-and-upload-artifact-to-s3)
+    - [Auto release](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#auto-release)
+    - [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#enforce-pr-labels)
+    - [Build Go lambda and upload artifact to S3](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#build-go-lambda-and-upload-artifact-to-s3)
 
 ## Automation
 
 ### Auto release
 
 Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**.
-Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels).
+Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#enforce-pr-labels).
 
 [Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
 
@@ -33,7 +33,7 @@ jobs:
 
 ### Enforce PR labels
 
-Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows#auto-release).
+Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#auto-release).
 
 [Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
 
