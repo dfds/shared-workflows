@@ -5,12 +5,15 @@ A repository for shared action workflows, best practice for new and existing rep
 Shared workflows:
 - Security
     - [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
+    - [TFSec PR Commenter](https://github.com/dfds/shared-workflows#tfsec-pr-commenter)
 - Automation
     - [Auto release](https://github.com/dfds/shared-workflows#auto-release)
     - [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
     - [Build Go lambda and upload artifact to S3](https://github.com/dfds/shared-workflows#build-go-lambda-and-upload-artifact-to-s3)
 
-## Gitleaks
+## Security
+
+### Gitleaks
 
 Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos.
 
@@ -29,8 +32,29 @@ jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/gitleaks.yml@master
 ```
+### TFSec PR Commenter
 
-## Auto release
+Add comments to pull requests where tfsec checks have failed
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter).
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run tfsec on pull requests
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/tfsec-pr-commenter.yml@master
+```
+
+## Automation
+
+### Auto release
 
 Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**.
 Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
@@ -51,7 +75,7 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/auto-release.yml@master
 ```
 
-## Enforce PR labels
+### Enforce PR labels
 
 Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows#auto-release).
 
@@ -72,7 +96,7 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/enforce-release-labels.yml@master
 ```
 
-## Build Go lambda and upload artifact to S3
+### Build Go lambda and upload artifact to S3
 
 Builds a Go lambda and uploads the zip file to S3 bucket
 
