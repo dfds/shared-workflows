@@ -110,7 +110,7 @@ on:
 jobs:
   build-and-upload-to-s3:
     name: build-and-upload-to-s3
-    uses: dfds/shared-workflows/.github/workflows/build-and-upload-to-s3.yml@add_lambdas_workflow
+    uses: dfds/shared-workflows/.github/workflows/build-and-upload-to-s3.yml@master
     with:
       role-session-name: samplesessionname #Session name
       working-directory: ./working-directory #The working directory that includes the Makefile
