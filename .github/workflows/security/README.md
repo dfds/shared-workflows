@@ -27,7 +27,7 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/gitleaks.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security/gitleaks.yml@master
 ```
 
 ### TFSec PR Commenter
@@ -47,7 +47,7 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/tfsec-pr-commenter.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security/tfsec-pr-commenter.yml@master
 ```
 
 ### TFSec with upload
@@ -67,5 +67,5 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/tfsec-upload.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security/tfsec-upload.yml@master
 ```
