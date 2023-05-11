@@ -47,7 +47,7 @@ jobs:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
 ```
 
-## Auto release
+## Auto release holy moly
 
 Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
 
@@ -56,7 +56,7 @@ Github Action to create a Github Release on pushes to master. Automatically tags
 How to invoke this shared workflow:
 
 ```yaml
-name: Auto release
+name: Auto release holy moly
 
 on:
   push:

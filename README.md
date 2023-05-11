@@ -10,4 +10,4 @@ Shared workflows:
 - [Automation](https://github.com/dfds/shared-workflows/blob/master/workflows/automation)
 	- [Enforce PR labels](https://github.com/dfds/shared-workflows/blob/master/workflows/automation#enforce-pr-labels)
 	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows/blob/master/workflows/automation#build-lambda-and-upload-to-s3)
-	- [Auto release](https://github.com/dfds/shared-workflows/blob/master/workflows/automation#auto-release)
+	- [Auto release holy moly](https://github.com/dfds/shared-workflows/blob/master/workflows/automation#auto-release-holy-moly)
