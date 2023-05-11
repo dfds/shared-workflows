@@ -1,0 +1,11 @@
+name: Gitleaks
+description: Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos.
+author: https://github.com/marketplace/actions/gitleaks
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security/gitleaks.yml@master

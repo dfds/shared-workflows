@@ -1,0 +1,11 @@
+name: Run tfsec on pull requests
+description: Add comments to pull requests where tfsec checks have failed.
+author: https://github.com/marketplace/actions/run-tfsec-pr-commenter
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security/tfsec-pr-commenter.yml@master

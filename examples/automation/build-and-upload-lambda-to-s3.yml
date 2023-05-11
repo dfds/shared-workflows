@@ -1,0 +1,18 @@
+name: Build lambda and upload to S3
+description: Builds a Go lambda and uploads the zip file to S3 bucket.
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build-and-upload-to-s3:
+    name: build-and-upload-to-s3
+    uses: dfds/shared-workflows/.github/workflows/automation/build-and-upload-to-s3.yml@master
+    with:
+      role-session-name: samplesessionname #Session name
+      working-directory: ./working-directory #The working directory that includes the Makefile
+      lambda-package-name: lambda-package.zip #The lambda package name 
+      s3-location: s3-location #The S3 location to put the artifact
+    secrets:
+      role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed

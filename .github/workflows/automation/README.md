@@ -1,26 +1,15 @@
-# Shared workflows
+# Automation
 
-A repository for shared action workflows, best practice for new and existing repositories.
+## Auto release
 
-Shared workflows:
-- Automation
-    - [Auto release](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#auto-release)
-    - [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#enforce-pr-labels)
-    - [Build Go lambda and upload artifact to S3](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#build-go-lambda-and-upload-artifact-to-s3)
-
-## Automation
-
-### Auto release
-
-Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**.
-Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#enforce-pr-labels).
+Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#enforce-pr-labels).
 
 [Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
 
 How to invoke this shared workflow:
 
 ```yaml
-name: Create repository release
+name: Auto release
 
 on:
   push:
@@ -31,7 +20,7 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/automation/auto-release.yml@master
 ```
 
-### Enforce PR labels
+## Enforce PR labels
 
 Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#auto-release).
 
@@ -52,9 +41,11 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/automation/enforce-release-labels.yml@master
 ```
 
-### Build Go lambda and upload artifact to S3
+## Build lambda and upload to S3
 
 Builds a Go lambda and uploads the zip file to S3 bucket.
+
+How to invoke this shared workflow:
 
 ```yaml
 name: Build lambda and upload to S3

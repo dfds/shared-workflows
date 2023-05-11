@@ -1,0 +1,11 @@
+name: Run tfsec and upload
+description: This Github Action will run the tfsec sarif check then add the report to the repo for upload.
+author: https://github.com/marketplace/actions/run-tfsec-with-sarif-upload
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security/tfsec-upload.yml@master

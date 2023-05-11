@@ -1,40 +1,10 @@
-# Shared workflows
+# Security
 
-A repository for shared action workflows, best practice for new and existing repositories.
-
-Shared workflows:
-- Security
-    - [Gitleaks](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/security#gitleaks)
-    - [TFSec PR Commenter](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/security#tfsec-pr-commenter)
-    - [TFSec with upload](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/security#tfsec-with-upload)
-
-## Security
-
-### Gitleaks
-
-Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos.
-
-[Marketplace](https://github.com/marketplace/actions/gitleaks).
-
-How to invoke this shared workflow:
-
-```yaml
-name: Gitleaks
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security/gitleaks.yml@master
-```
-
-### TFSec PR Commenter
+## Run tfsec on pull requests
 
 Add comments to pull requests where tfsec checks have failed.
 
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter).
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
 
 How to invoke this shared workflow:
 
@@ -50,11 +20,11 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/security/tfsec-pr-commenter.yml@master
 ```
 
-### TFSec with upload
+## Run tfsec and upload
 
 This Github Action will run the tfsec sarif check then add the report to the repo for upload.
 
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload).
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload)
 
 How to invoke this shared workflow:
 
@@ -68,4 +38,24 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/security/tfsec-upload.yml@master
+```
+
+## Gitleaks
+
+Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos.
+
+[Marketplace](https://github.com/marketplace/actions/gitleaks)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Gitleaks
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security/gitleaks.yml@master
 ```
