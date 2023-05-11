@@ -1,4 +1,4 @@
-name: Auto release
+name: Auto release holy moly
 description: Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
 author: https://github.com/marketplace/actions/tag-release-on-push-action
 
