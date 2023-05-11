@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-upload-to-s3:
     name: build-and-upload-to-s3
-    uses: dfds/shared-workflows/.github/workflows/automation/build-and-upload-to-s3.yml@master
+    uses: dfds/shared-workflows/workflows/automation/build-and-upload-to-s3.yml@master
     with:
       role-session-name: samplesessionname #Session name
       working-directory: ./working-directory #The working directory that includes the Makefile

@@ -1,5 +1,5 @@
 name: Enforce PR labels
-description: Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/.github/workflows/automation#auto-release).
+description: Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
 author: https://github.com/marketplace/actions/enforce-pr-labels
 
 on:
@@ -9,4 +9,4 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/automation/enforce-release-labels.yml@master
+    uses: dfds/shared-workflows/workflows/automation/enforce-release-labels.yml@master
