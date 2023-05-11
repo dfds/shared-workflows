@@ -1,25 +1,5 @@
 # Security
 
-## Run tfsec on pull requests
-
-Add comments to pull requests where tfsec checks have failed.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Run tfsec on pull requests
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security/tfsec-pr-commenter.yml@master
-```
-
 ## Run tfsec and upload
 
 This Github Action will run the tfsec sarif check then add the report to the repo for upload.
@@ -37,7 +17,27 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/security/tfsec-upload.yml@master
+    uses: dfds/shared-workflows/workflows/security/tfsec-upload.yml@master
+```
+
+## Run tfsec on pull requests
+
+Add comments to pull requests where tfsec checks have failed.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run tfsec on pull requests
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/workflows/security/tfsec-pr-commenter.yml@master
 ```
 
 ## Gitleaks
@@ -57,5 +57,5 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/security/gitleaks.yml@master
+    uses: dfds/shared-workflows/workflows/security/gitleaks.yml@master
 ```
