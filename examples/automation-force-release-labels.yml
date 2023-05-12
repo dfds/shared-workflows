@@ -9,4 +9,4 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/automation/enforce-release-labels.yml@master
+    uses: dfds/shared-workflows/.github/workflows/enforce-release-labels.yml@master

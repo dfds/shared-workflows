@@ -22,31 +22,37 @@ def rootReadmeHeader():
 
     return headlineContent
 
-repoUri = 'https://github.com/dfds/shared-workflows/blob/master/.github/workflows/'
+repoUri = 'https://github.com/dfds/shared-workflows'
 examplesDir = 'examples'
-rootReadmeContent = rootReadmeHeader()
- 
-for category in os.listdir(examplesDir):
-    categoryPath = os.path.join(examplesDir, category)
+headerReadmeContent = rootReadmeHeader()
+bodyReadmeConetent = []
+collection = {}
 
-    # Ignore files here
-    if os.path.isfile(categoryPath):
+# Create example collection
+for example in os.listdir(examplesDir):
+    examplePath = os.path.join(examplesDir, example)
+
+    # Ignore folders here
+    if os.path.isdir(examplePath):
         continue
+
+    # Extract the category from filename
+    category = example.split('-')[0]
+
+    if not category in collection.keys():
+        collection[category] = []
     
+    collection[category].append(examplePath)
+
+for category in collection:
     # Insert the category list item in the index README
-    rootReadmeContent += lb() + '- [' + category.title() + '](' + repoUri + category + ')'
+    headerReadmeContent += lb() + '- [' + category.title() + '](' + repoUri + '#' + category + ')'
 
     # Initialize the category section
-    currentCategory = '# ' + category.title()
-
+    currentCategory = dlb() + '## ' + category.title()
+    
     # Loop through every example in the category
-    for example in os.listdir(categoryPath):
-        examplePath = os.path.join(categoryPath, example)
-
-        # Ignore folders here
-        if os.path.isdir(examplePath):
-            continue
-
+    for examplePath in collection[category]:
         # Here we have to read the example yaml
         with open(examplePath, 'r') as stream:
             yml = yaml.safe_load(stream)
@@ -56,12 +62,12 @@ for category in os.listdir(examplesDir):
             
             # Insert the example list item in the index README
             nameUriEncoded = yml['name'].replace(' ', '-').lower()
-            rootReadmeContent += \
+            headerReadmeContent += \
                 lb() + ind() + \
-                '- [' + yml['name'] + '](' + repoUri + category + '#' + nameUriEncoded + ')'
+                '- [' + yml['name'] + '](' + repoUri + '#' + nameUriEncoded + ')'
             
             # Example title
-            currentCategory += dlb() + '## ' + yml['name']
+            currentCategory += dlb() + '### ' + yml['name']
 
             # Example description
             if 'description' in yml:
@@ -91,13 +97,10 @@ for category in os.listdir(examplesDir):
                 lb() + \
                 '```'
     
-    # Write it all to category README
-    categoryUriEncoded = category.replace(' ', '-').lower()
-    rootReadme = open('.github/workflows/' + category + '/README.md', 'w')
-    rootReadme.write(currentCategory)
-    rootReadme.close()
+    # Write it to body README
+    bodyReadmeConetent.append(currentCategory)
 
 # Write it all to README
 rootReadme = open('README.md', 'w')
-rootReadme.write(rootReadmeContent)
+rootReadme.write(headerReadmeContent + ''.join(bodyReadmeConetent))
 rootReadme.close()

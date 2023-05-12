@@ -3,11 +3,142 @@
 A repository for shared action workflows, best practice for new and existing repositories.
 
 Shared workflows:
-- [Security](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/security)
-	- [Run tfsec and upload](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/security#run-tfsec-and-upload)
-	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/security#run-tfsec-on-pull-requests)
-	- [Gitleaks](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/security#gitleaks)
-- [Automation](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/automation)
-	- [Enforce PR labels](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/automation#enforce-pr-labels)
-	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/automation#build-lambda-and-upload-to-s3)
-	- [Auto release](https://github.com/dfds/shared-workflows/blob/master/.github/workflows/automation#auto-release)
+- [Automation](https://github.com/dfds/shared-workflows#automation)
+	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
+	- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
+	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows#build-lambda-and-upload-to-s3)
+- [Security](https://github.com/dfds/shared-workflows#security)
+	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
+	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
+	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
+
+## Automation
+
+### Enforce PR labels
+
+Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
+
+[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Enforce PR labels
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, opened, edited, synchronize]
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/enforce-release-labels.yml@master
+```
+
+### Auto release
+
+Github Action to create a Github Release on pushes to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
+
+[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Auto release
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/auto-release.yml@master
+```
+
+### Build lambda and upload to S3
+
+Builds a Go lambda and uploads the zip file to S3 bucket.
+
+How to invoke this shared workflow:
+
+```yaml
+name: Build lambda and upload to S3
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build-and-upload-to-s3:
+    name: build-and-upload-to-s3
+    uses: dfds/shared-workflows/.github/workflows/build-and-upload-to-s3.yml@master
+    with:
+      role-session-name: samplesessionname #Session name
+      working-directory: ./working-directory #The working directory that includes the Makefile
+      lambda-package-name: lambda-package.zip #The lambda package name 
+      s3-location: s3-location #The S3 location to put the artifact
+    secrets:
+      role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
+```
+
+## Security
+
+### Run tfsec on pull requests
+
+Add comments to pull requests where tfsec checks have failed.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run tfsec on pull requests
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/tfsec-pr-commenter.yml@master
+```
+
+### Run tfsec and upload
+
+This Github Action will run the tfsec sarif check then add the report to the repo for upload.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run tfsec and upload
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/tfsec-upload.yml@master
+```
+
+### Gitleaks
+
+Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos.
+
+[Marketplace](https://github.com/marketplace/actions/gitleaks)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Gitleaks
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/gitleaks.yml@master
+```

@@ -8,4 +8,4 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/security/gitleaks.yml@master
+    uses: dfds/shared-workflows/.github/workflows/gitleaks.yml@master

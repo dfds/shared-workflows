@@ -8,4 +8,4 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/security/tfsec-upload.yml@master
+    uses: dfds/shared-workflows/.github/workflows/tfsec-upload.yml@master
