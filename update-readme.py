@@ -22,7 +22,7 @@ def rootReadmeHeader():
 
     return headlineContent
 
-repoUri = 'https://github.com/dfds/shared-workflows/blob/master/workflows/'
+repoUri = 'https://github.com/dfds/shared-workflows/blob/master/.github/workflows/'
 examplesDir = 'examples'
 rootReadmeContent = rootReadmeHeader()
  
@@ -93,7 +93,7 @@ for category in os.listdir(examplesDir):
     
     # Write it all to category README
     categoryUriEncoded = category.replace(' ', '-').lower()
-    rootReadme = open('workflows/' + category + '/README.md', 'w')
+    rootReadme = open('.github/workflows/' + category + '/README.md', 'w')
     rootReadme.write(currentCategory)
     rootReadme.close()
 
