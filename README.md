@@ -4,35 +4,40 @@ A repository for shared action workflows, best practice for new and existing rep
 
 Shared workflows:
 - [Automation](https://github.com/dfds/shared-workflows#automation)
-	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
-	- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
 	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows#build-lambda-and-upload-to-s3)
+	- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
+	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
 - [Security](https://github.com/dfds/shared-workflows#security)
-	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
 	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
+	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 
 ## Automation
 
-### Enforce PR labels
+### Build lambda and upload to S3
 
-Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
-
-[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+Builds a Go lambda and uploads the zip file to S3 bucket.
 
 How to invoke this shared workflow:
 
 ```yaml
-name: Enforce PR labels
+name: Build lambda and upload to S3
 
 on:
   pull_request:
-    types: [labeled, unlabeled, opened, edited, synchronize]
     branches: [ "master", "main" ]
 
 jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/enforce-release-labels.yml@master
+  build-and-upload-to-s3:
+    name: build-and-upload-to-s3
+    uses: dfds/shared-workflows/.github/workflows/automation-build-and-upload-to-s3.yml@master
+    with:
+      role-session-name: samplesessionname #Session name
+      working-directory: ./working-directory #The working directory that includes the Makefile
+      lambda-package-name: lambda-package.zip #The lambda package name 
+      s3-location: s3-location #The S3 location to put the artifact
+    secrets:
+      role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
 ```
 
 ### Auto release
@@ -52,56 +57,31 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/auto-release.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
 ```
 
-### Build lambda and upload to S3
+### Enforce PR labels
 
-Builds a Go lambda and uploads the zip file to S3 bucket.
+Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
+
+[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
 
 How to invoke this shared workflow:
 
 ```yaml
-name: Build lambda and upload to S3
+name: Enforce PR labels
 
 on:
   pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  build-and-upload-to-s3:
-    name: build-and-upload-to-s3
-    uses: dfds/shared-workflows/.github/workflows/build-and-upload-to-s3.yml@master
-    with:
-      role-session-name: samplesessionname #Session name
-      working-directory: ./working-directory #The working directory that includes the Makefile
-      lambda-package-name: lambda-package.zip #The lambda package name 
-      s3-location: s3-location #The S3 location to put the artifact
-    secrets:
-      role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
-```
-
-## Security
-
-### Run tfsec on pull requests
-
-Add comments to pull requests where tfsec checks have failed.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Run tfsec on pull requests
-
-on:
-  pull_request:
+    types: [labeled, unlabeled, opened, edited, synchronize]
     branches: [ "master", "main" ]
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/tfsec-pr-commenter.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
 ```
+
+## Security
 
 ### Run tfsec and upload
 
@@ -120,7 +100,7 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/tfsec-upload.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
 ```
 
 ### Gitleaks
@@ -140,5 +120,25 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/gitleaks.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
+```
+
+### Run tfsec on pull requests
+
+Add comments to pull requests where tfsec checks have failed.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run tfsec on pull requests
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
 ```
