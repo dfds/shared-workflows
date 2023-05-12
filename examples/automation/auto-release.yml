@@ -8,4 +8,4 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/workflows/automation/auto-release.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation/auto-release.yml@master
