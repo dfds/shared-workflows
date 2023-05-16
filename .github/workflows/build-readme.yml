@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    if: ${{ !contains(github.event.pull_request.head_commit.message, 'Update readme') }}
     runs-on: ubuntu-latest
     steps:
     - name: Check out repo
@@ -31,5 +30,5 @@ jobs:
         git config --global user.email "readme-bot@dfds.com"
         git config --global user.name "README-bot"
         git add .
-        git commit -m "Update readme"
+        git commit -m "Update readme [skip actions]"
         git push
