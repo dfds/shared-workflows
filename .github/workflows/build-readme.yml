@@ -5,6 +5,8 @@ on:
     branches: [ "master", "main" ]
     paths:
       - 'examples/**'
+    paths-ignore:
+      - README.md
 
 jobs:
   build:
