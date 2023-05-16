@@ -9,7 +9,7 @@ Shared workflows:
 	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
 - [Security](https://github.com/dfds/shared-workflows#security)
 	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
-	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
+	- [Gitleaks 1](https://github.com/dfds/shared-workflows#gitleaks-1)
 	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 
 ## Automation
@@ -103,7 +103,7 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
 ```
 
-### Gitleaks
+### Gitleaks 1
 
 Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos. You have to add GITLEAKS_LICENSE secret to your repository, it does not work with organization secrets. The license key is stored in 1Password.
 
@@ -112,7 +112,7 @@ Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like pass
 How to invoke this shared workflow:
 
 ```yaml
-name: Gitleaks
+name: Gitleaks 1
 
 on:
   pull_request:
