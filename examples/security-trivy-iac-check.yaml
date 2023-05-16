@@ -1,0 +1,11 @@
+name: Run Trivy IAC with Quality GAte
+description: This Github Action will run the trivy IAC check and block if High or Critical issues are found.
+author: https://github.com/marketplace/actions/run-trivy-iac-check
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
