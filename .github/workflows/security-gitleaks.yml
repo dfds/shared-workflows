@@ -2,6 +2,9 @@ name: Gitleaks
 
 on:
   workflow_call:
+    secrets:
+      GITLEAKS_LICENSE:
+        required: true
 
 jobs:
   Gitleaks:
