@@ -1,4 +1,4 @@
-name: Gitleaks
+name: Gitleaks 1
 description: Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos. You have to add GITLEAKS_LICENSE secret to your repository, it does not work with organization secrets. The license key is stored in 1Password.
 author: https://github.com/marketplace/actions/gitleaks
 
