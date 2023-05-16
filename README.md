@@ -105,7 +105,7 @@ jobs:
 
 ### Gitleaks
 
-Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos.
+Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos. You have to add GITLEAKS_LICENSE secret to your repository, it does not work with organization secrets. The license key is stored in 1Password.
 
 [Marketplace](https://github.com/marketplace/actions/gitleaks)
 
@@ -121,6 +121,7 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
+    secrets: inherit
 ```
 
 ### Run tfsec on pull requests
