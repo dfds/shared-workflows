@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    if: ${{ !contains(github.event.head_commit.message, 'Update readme') }}
+    if: ${{ !contains(github.event.workflow_run.head_commit.message, 'Update readme') }}
     runs-on: ubuntu-latest
     steps:
     - name: Check out repo
