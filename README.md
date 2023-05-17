@@ -1,6 +1,6 @@
 # Shared workflows
 
-A repository for shared action workflows, best practice for new and existing repositories.
+A repository for shared action workflows, best practice for new and existing repositories. We welcome contributions. See [Contributing](docs/CONTRIBUTING.md) to get started.
 
 Shared workflows:
 - [Automation](https://github.com/dfds/shared-workflows#automation)
@@ -11,6 +11,7 @@ Shared workflows:
 	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
 	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
 	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
+	- [Run Trivy IAC with Quality GAte](https://github.com/dfds/shared-workflows#run-trivy-iac-with-quality-gate)
 
 ## Automation
 
@@ -142,4 +143,24 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
+```
+
+### Run Trivy IAC with Quality GAte
+
+This Github Action will run the trivy IAC check and block if High or Critical issues are found.
+
+[Marketplace](https://github.com/marketplace/actions/run-trivy-iac-check)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run Trivy IAC with Quality GAte
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
 ```
