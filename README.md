@@ -159,6 +159,8 @@ name: Run Trivy IAC with Quality GAte
 on:
   push:
     branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
 
 jobs:
   shared:
