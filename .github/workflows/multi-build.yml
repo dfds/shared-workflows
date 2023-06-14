@@ -19,7 +19,7 @@ on:
         type: string
 
 jobs:
-  multi-build:
+  test-container:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,6 +48,7 @@ jobs:
             ${{ inputs.image-repo }}:test \
             ${{ inputs.test-script-cmd }}
   shared:
+    needs: test-container
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
       # - name: Login to Docker Hub
       #   uses: docker/login-action@v2
