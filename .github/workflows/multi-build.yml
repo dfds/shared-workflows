@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      semver: ${{ steps.auto-release-id.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -64,7 +66,7 @@ jobs:
           # Docker tags based on the following events/attributes
           tags: |
             type=schedule
-            type=semver,pattern={{version}},value=${{ jobs.create-release.steps.auto-release-id.outputs.version }}
+            type=semver,pattern={{version}},value=${{ test-container.outputs.semver }}
 
 
       # - name: Login to Docker Hub
