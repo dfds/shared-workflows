@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      semver: ${{ steps.auto-release-id.outputs.version }}
     steps:
       - uses: rymndhng/release-on-push-action@master
         id: auto-release-id
