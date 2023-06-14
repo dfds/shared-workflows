@@ -47,9 +47,26 @@ jobs:
             --volume "$PWD"/${{ inputs.test-script-path }}/:/${{ inputs.test-script-path }} \
             ${{ inputs.image-repo }}:test \
             ${{ inputs.test-script-cmd }}
-  shared:
+  create-release:
     needs: test-container
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+  collect-metadata:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      name: Docker meta
+      id: docker-metadata
+      uses: docker/metadata-action@v3
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          ${{ inputs.image-repo }}
+        # Docker tags based on the following events/attributes
+        tags: |
+          type=schedule
+          type=semver,pattern={{version}},value=${{ jobs.create-release.steps.auto-release-id.outputs.version }}
+
+
       # - name: Login to Docker Hub
       #   uses: docker/login-action@v2
       #   with:

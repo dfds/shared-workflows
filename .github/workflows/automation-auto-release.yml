@@ -10,6 +10,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: rymndhng/release-on-push-action@master
+        id: auto-release-id
         with:
           bump_version_scheme: patch
           tag_prefix: ""
