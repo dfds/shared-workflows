@@ -57,6 +57,8 @@ jobs:
   collect-metadata:
     needs: create-release
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Docker meta
         id: docker-metadata
@@ -69,6 +71,8 @@ jobs:
           tags: |
             type=schedule
             type=semver,pattern={{version}},value=${{ needs.create-release.outputs.semver }}
+      - name: Checkout
+        uses: actions/checkout@master
       - name: Fetch description from README file
         if: "${{ inputs.docker-readme-path != '' }}"
         id: docker-description
