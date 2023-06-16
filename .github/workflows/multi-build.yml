@@ -23,6 +23,7 @@ on:
 
 jobs:
   test-container:
+    if: "${{ inputs.test-script-path != '' }}"
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +44,6 @@ jobs:
           load: true
           tags: ${{ inputs.image-repo }}:test
       - name: Test successful container
-        if: "${{ inputs.test-script-path != '' }}"
         run: |
           docker run \
             --rm \
