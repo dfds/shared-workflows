@@ -49,7 +49,8 @@ jobs:
             ${{ inputs.test-script-cmd }}
   create-release:
     needs: test-container
-    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+    # uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@multi-build
   collect-metadata:
     needs: create-release
     runs-on: ubuntu-latest
