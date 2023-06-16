@@ -17,6 +17,9 @@ on:
       test-script-cmd:
         required: false
         type: string
+      docker-readme-path:
+        required: false
+        type: string
 
 jobs:
   test-container:
@@ -66,6 +69,17 @@ jobs:
           tags: |
             type=schedule
             type=semver,pattern={{version}},value=${{ needs.create-release.outputs.semver }}
+      - name: Fetch description from README file
+        if: "${{ inputs.docker-readme-path != '' }}"
+        id: docker-description
+        # This takes the first few lines of the docker-README file,
+        # strips lines with common used symbols in README's
+        # and fetches the first paragraph up to a dot.
+        run: |
+          readmeFile=$(head -n 10 ${{ inputs.docker-readme-path }})
+          readmeFile=$(sed -r '/^[\[#|`|*|\|]/d' <<< "$readmeFile")
+          readmeFile=$(echo $readmeFile | cut -f1 -d".")
+          echo "${readmeFile}."
 
 
       # - name: Login to Docker Hub
