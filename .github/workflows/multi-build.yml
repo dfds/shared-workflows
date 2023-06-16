@@ -52,6 +52,9 @@ jobs:
             ${{ inputs.test-script-cmd }}
   create-release:
     needs: test-container
+    if: |
+      always() &&
+      (needs.test-container.result == 'success' || needs.test-container.result == 'skipped')
     # uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@multi-build
   collect-metadata:
