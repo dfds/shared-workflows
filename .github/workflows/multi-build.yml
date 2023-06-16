@@ -59,6 +59,8 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@multi-build
   collect-metadata:
     needs: create-release
+    if: |
+      always() && needs.create-release.result == 'success'
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
