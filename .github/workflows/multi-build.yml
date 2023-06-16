@@ -70,6 +70,7 @@ jobs:
     outputs:
       tags: ${{ steps.docker-metadata.outputs.tags }}
       labels: ${{ steps.docker-metadata.outputs.labels }}
+      description: ${{ steps.docker-description.outputs.stdout }}
     steps:
       - name: Docker meta
         id: docker-metadata
@@ -126,4 +127,14 @@ jobs:
           push: true
           tags: ${{ needs.collect-metadata.outputs.tags }}
           labels: ${{ needs.collect-metadata.outputs.labels }}
+      - name: Docker Hub README and Description
+        if: "${{ inputs.docker-readme-path != '' }}"
+        uses: dfds/dockerhub-description@main
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ inputs.image-repo }}
+          # Inject the fetched description from previous step
+          short-description: ${{ needs.collect-metadata.outputs.description }}
+          readme-filepath: ${{ inputs.docker-readme-path }}
       
