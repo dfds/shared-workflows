@@ -23,6 +23,7 @@ on:
 
 jobs:
   test-container:
+    # Skip this entire test phase if no path is provided
     if: "${{ inputs.test-script-path != '' }}"
     runs-on: ubuntu-latest
     env:
@@ -52,6 +53,7 @@ jobs:
             ${{ inputs.test-script-cmd }}
   create-release:
     needs: test-container
+    # This if is required because if just 1 job is skipped all subsequent jobs are skipped
     if: |
       always() &&
       (needs.test-container.result == 'success' || needs.test-container.result == 'skipped')
@@ -59,11 +61,15 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@multi-build
   collect-metadata:
     needs: create-release
+    # This if is required because if just 1 job is skipped all subsequent jobs are skipped
     if: |
       always() && needs.create-release.result == 'success'
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      tags: ${{ steps.docker-metadata.outputs.tags }}
+      labels: ${{ steps.docker-metadata.outputs.labels }}
     steps:
       - name: Docker meta
         id: docker-metadata
@@ -89,10 +95,35 @@ jobs:
           readmeFile=$(sed -r '/^[\[#|`|*|\|]/d' <<< "$readmeFile")
           readmeFile=$(echo $readmeFile | cut -f1 -d".")
           echo "${readmeFile}."
-
-
-      # - name: Login to Docker Hub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+  upload:
+    needs: collect-metadata
+    # This if is required because if just 1 job is skipped all subsequent jobs are skipped
+    if: |
+      always() && needs.collect-metadata.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: "linux/amd64,linux/arm/v7,linux/arm64"
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          push: true
+          tags: ${{ needs.collect-metadata.outputs.tags }}
+          labels: ${{ needs.collect-metadata.outputs.labels }}
+      
