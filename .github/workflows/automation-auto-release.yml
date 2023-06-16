@@ -2,6 +2,10 @@ name: Create repository release
 
 on:
   workflow_call:
+    outputs:
+      semver:
+        description: "The semantic version of the release"
+        value: ${{ jobs.auto-release.outputs.semver }}
 
 jobs:
   auto-release:
