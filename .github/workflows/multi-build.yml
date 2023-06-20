@@ -62,6 +62,7 @@ jobs:
       always() &&
       (needs.test-container.result == 'success' || needs.test-container.result == 'skipped')
     # uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+    # TODO: Change to the above line when the workflow is merged into the shared-workflows repo
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@multi-build
   collect-metadata:
     needs: create-release
@@ -172,3 +173,4 @@ jobs:
         with:
           status: failure
           notify_when: 'failure'
+          notification_title: "{repo} Multi-Build Action failed"
