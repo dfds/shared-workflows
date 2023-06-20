@@ -153,6 +153,10 @@ jobs:
           severity: "CRITICAL,HIGH"
           hide-progress: false
           exit-code: "0"
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
   slack-notification:
     needs: [test-container, create-release, collect-metadata, upload]
     if: |
