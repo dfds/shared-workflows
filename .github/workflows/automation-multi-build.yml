@@ -63,9 +63,7 @@ jobs:
     if: |
       always() &&
       (needs.test-container.result == 'success' || needs.test-container.result == 'skipped')
-    # uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
-    # TODO: Change to the above line when the workflow is merged into the shared-workflows repo
-    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@multi-build
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
   collect-metadata:
     needs: create-release
     # This 'if' is required because if just 1 job is skipped all subsequent jobs are skipped
