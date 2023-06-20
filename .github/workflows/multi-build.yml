@@ -11,6 +11,9 @@ on:
       image-repo:
         required: true
         type: string
+      os-archs:
+        required: true
+        type: string
       test-script-path:
         required: false
         type: string
@@ -33,9 +36,6 @@ jobs:
         uses: actions/checkout@master
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-        # I don't think this is needed for the test-container job
-        with:
-          platforms: "linux/amd64,linux/arm/v7,linux/arm64"
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
@@ -111,7 +111,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: "linux/amd64,linux/arm/v7,linux/arm64"
+          platforms: "${{ inputs.os-archs }}"
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
@@ -124,7 +124,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: ${{ inputs.os-archs }}
           push: true
           tags: ${{ needs.collect-metadata.outputs.tags }}
           labels: ${{ needs.collect-metadata.outputs.labels }}
@@ -138,4 +138,3 @@ jobs:
           # Inject the fetched description from previous step
           short-description: ${{ needs.collect-metadata.outputs.description }}
           readme-filepath: ${{ inputs.docker-readme-path }}
-      
