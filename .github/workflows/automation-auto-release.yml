@@ -2,14 +2,21 @@ name: Create repository release
 
 on:
   workflow_call:
+    outputs:
+      semver:
+        description: "The semantic version of the release"
+        value: ${{ jobs.auto-release.outputs.semver }}
 
 jobs:
   auto-release:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      semver: ${{ steps.auto-release-id.outputs.version }}
     steps:
       - uses: rymndhng/release-on-push-action@master
+        id: auto-release-id
         with:
           bump_version_scheme: patch
           tag_prefix: ""

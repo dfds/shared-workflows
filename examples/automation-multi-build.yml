@@ -1,0 +1,31 @@
+name: Multi architecture docker build
+description: All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-multi-build.yml@master
+    secrets: inherit
+    with:
+      # Required
+      image-repo: dfdsdk/repo-name
+
+      # Required, options: linux/amd64,linux/arm64,linux/arm/v7,windows/amd64
+      os-archs: "linux/amd64,linux/arm64,linux/arm/v7"
+
+      # Optional, path to the test script to run inside the container
+      test-script-path: ./app/test.py
+      
+      # Optional, the command to run the test script inside the container
+      test-script-cmd: "python test.py"
+      
+      # Optional, the path to the readme file to use for the docker image
+      # It is recommended that if you do not have a specific file for the docker image,
+      # that you use the same readme as the repository
+      docker-readme-path: "./DockerREADME.md"
+
+      # Optional, sends a slack notification to the channel specified in the repository secrets
+      slack-notification: true
