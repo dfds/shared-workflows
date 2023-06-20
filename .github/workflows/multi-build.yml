@@ -23,6 +23,9 @@ on:
       docker-readme-path:
         required: false
         type: string
+      slack-notification:
+        required: false
+        type: boolean
 
 jobs:
   test-container:
