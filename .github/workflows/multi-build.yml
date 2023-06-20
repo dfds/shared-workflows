@@ -173,4 +173,5 @@ jobs:
         with:
           status: failure
           notify_when: 'failure'
-          notification_title: "{repo} Multi-Build Action failed"
+          notification_title: "{repo} Multi-Build action failed"
+          message_format: "{emoji} *{workflow}* {status_message} in <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}> job <{run_url}|{workflow}>"
