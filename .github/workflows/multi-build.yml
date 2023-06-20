@@ -142,6 +142,7 @@ jobs:
           short-description: ${{ needs.collect-metadata.outputs.description }}
           readme-filepath: ${{ inputs.docker-readme-path }}
   slack-notification:
+    needs: [test-container, create-release, collect-metadata, upload]
     if: |
       always()
       && inputs.slack-notification == true
