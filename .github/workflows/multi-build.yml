@@ -140,9 +140,7 @@ jobs:
           readme-filepath: ${{ inputs.docker-readme-path }}
   slack-notification:
     if: |
-      always()
-      && inputs.slack-notification == true
-      && contains(needs.*.result, 'failure')
+      always() && ${{ inputs.slack-notification == true && contains(needs.*.result, 'failure') }}
     uses: ravsamhq/notify-slack-action@master
       with:
         status: failure
