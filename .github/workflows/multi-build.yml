@@ -109,6 +109,8 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Try to fail
+        run: exit 1
       - name: Checkout
         uses: actions/checkout@master
       - name: Set up QEMU
