@@ -143,6 +143,7 @@ jobs:
       always()
       && inputs.slack-notification == true
       && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
     steps:
