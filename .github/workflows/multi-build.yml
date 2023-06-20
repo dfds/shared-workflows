@@ -7,6 +7,8 @@ on:
         required: true
       DOCKERHUB_TOKEN:
         required: true
+      SLACK_WEBHOOK:
+        required: false
     inputs:
       image-repo:
         required: true
