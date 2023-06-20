@@ -33,6 +33,7 @@ jobs:
         uses: actions/checkout@master
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
+        # I don't think this is needed for the test-container job
         with:
           platforms: "linux/amd64,linux/arm/v7,linux/arm64"
       - name: Set up Docker Buildx
@@ -53,7 +54,7 @@ jobs:
             ${{ inputs.test-script-cmd }}
   create-release:
     needs: test-container
-    # This if is required because if just 1 job is skipped all subsequent jobs are skipped
+    # This 'if' is required because if just 1 job is skipped all subsequent jobs are skipped
     if: |
       always() &&
       (needs.test-container.result == 'success' || needs.test-container.result == 'skipped')
@@ -61,7 +62,7 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@multi-build
   collect-metadata:
     needs: create-release
-    # This if is required because if just 1 job is skipped all subsequent jobs are skipped
+    # This 'if' is required because if just 1 job is skipped all subsequent jobs are skipped
     if: |
       always() && needs.create-release.result == 'success'
     runs-on: ubuntu-latest
@@ -70,7 +71,7 @@ jobs:
     outputs:
       tags: ${{ steps.docker-metadata.outputs.tags }}
       labels: ${{ steps.docker-metadata.outputs.labels }}
-      description: ${{ steps.docker-description.outputs.stdout }}
+      description: ${{ steps.docker-description.outputs.description }}
     steps:
       - name: Docker meta
         id: docker-metadata
@@ -95,10 +96,10 @@ jobs:
           readmeFile=$(head -n 10 ${{ inputs.docker-readme-path }})
           readmeFile=$(sed -r '/^[\[#|`|*|\|]/d' <<< "$readmeFile")
           readmeFile=$(echo $readmeFile | cut -f1 -d".")
-          echo "${readmeFile}."
+          echo "description=${readmeFile}" >> $GITHUB_OUTPUT
   upload:
     needs: collect-metadata
-    # This if is required because if just 1 job is skipped all subsequent jobs are skipped
+    # This 'if' is required because if just 1 job is skipped all subsequent jobs are skipped
     if: |
       always() && needs.collect-metadata.result == 'success'
     runs-on: ubuntu-latest
