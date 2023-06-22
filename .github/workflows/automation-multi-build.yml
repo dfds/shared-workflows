@@ -143,11 +143,11 @@ jobs:
           short-description: ${{ needs.collect-metadata.outputs.description }}
           readme-filepath: ${{ inputs.docker-readme-path }}
   slack-notification:
-    needs: [test-container, create-release, collect-metadata, upload]
+    # This respects the entire chain of jobs
+    needs: upload
     if: |
-      always()
+      failure()
       && inputs.slack-notification == true
-      && contains(needs.*.result, 'failure')
     runs-on: ubuntu-latest
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
