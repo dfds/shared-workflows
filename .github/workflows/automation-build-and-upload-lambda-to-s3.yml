@@ -1,10 +1,9 @@
-name: Build and upload Go lambda to S3
+name: Build and upload lambda to S3
 
 on:
   workflow_call:
     inputs:
       role-session-name:
-        description: 'The session name for assuming the role in AWS'
         required: true
         type: string
       aws-region:
