@@ -14,7 +14,9 @@ on:
       go-version:
         required: false
         type: string
-        default: '>= 1.20.0'
+      cache-dependency-path:
+        required: false
+        type: string
       working-directory:
         required: true
         type: string
@@ -47,9 +49,11 @@ jobs:
           role-session-name: ${{ inputs.role-session-name }}
           aws-region: ${{ inputs.aws-region }}
       - name: Setup Go
+        if: ${{ inputs.go-version }}
         uses: actions/setup-go@v4
         with:
           go-version: ${{ inputs.go-version }}
+          cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - name: Upload to S3
         working-directory: ${{ inputs.working-directory }}
         run: |
