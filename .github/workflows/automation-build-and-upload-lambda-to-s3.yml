@@ -1,10 +1,9 @@
-name: Build and upload Go lambda to S3
+name: Build and upload lambda to S3
 
 on:
   workflow_call:
     inputs:
       role-session-name:
-        description: 'The session name for assuming the role in AWS'
         required: true
         type: string
       aws-region:
@@ -14,7 +13,9 @@ on:
       go-version:
         required: false
         type: string
-        default: '>= 1.20.0'
+      cache-dependency-path:
+        required: false
+        type: string
       working-directory:
         required: true
         type: string
@@ -23,6 +24,9 @@ on:
         type: string
       s3-location:
         required: true
+        type: string
+      arguments:
+        required: false
         type: string
     secrets:
       role-to-assume:
@@ -47,11 +51,13 @@ jobs:
           role-session-name: ${{ inputs.role-session-name }}
           aws-region: ${{ inputs.aws-region }}
       - name: Setup Go
+        if: ${{ inputs.go-version }}
         uses: actions/setup-go@v4
         with:
           go-version: ${{ inputs.go-version }}
+          cache-dependency-path: ${{ inputs.cache-dependency-path }}
       - name: Upload to S3
         working-directory: ${{ inputs.working-directory }}
         run: |
-          make
-          aws s3 cp ${{ inputs.lambda-package-name }} s3://${{ inputs.s3-location }}/${{ inputs.lambda-package-name }}
+          make ${{ inputs.arguments }}
+          aws s3 cp ${{ inputs.lambda-package-name }} s3://${{ inputs.s3-location }}
