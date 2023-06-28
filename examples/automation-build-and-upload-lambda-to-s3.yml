@@ -16,5 +16,6 @@ jobs:
       s3-location: dfds-ce-shared-artifacts/iam-rolesanywhere-lambdas
       go-version: "1.20" #Should be specified only for Go lambdas
       cache-dependency-path: ./crl-importer-lambda/go.mod/go.sum #Should be specified only for Go lambdas
+      arguments: PACKAGE_NAME=${{ matrix.lambda-name }} #The arguments to be passed to make
     secrets:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
