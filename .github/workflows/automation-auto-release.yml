@@ -11,7 +11,10 @@ jobs:
   auto-release:
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # If this release should trigger another workflow the `GITHUB_TOKEN`
+      # secret must be overriden with the organization secret `GH_RELEASE`:
+      # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+      GITHUB_TOKEN: ${{ secrets.GH_RELEASE || secrets.GITHUB_TOKEN }}
     outputs:
       semver: ${{ steps.auto-release-id.outputs.version }}
     steps:

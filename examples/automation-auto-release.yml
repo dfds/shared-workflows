@@ -4,8 +4,10 @@ author: https://github.com/marketplace/actions/tag-release-on-push-action
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: ["master", "main"]
 
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+    # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
+    # secrets: inherit
