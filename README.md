@@ -5,14 +5,15 @@ A repository for shared action workflows, best practice for new and existing rep
 Shared workflows:
 - [Security](https://github.com/dfds/shared-workflows#security)
 	- [Run Trivy IAC with Quality GAte](https://github.com/dfds/shared-workflows#run-trivy-iac-with-quality-gate)
-	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
+	- [Snyk](https://github.com/dfds/shared-workflows#snyk)
 	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
 	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
+	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 - [Automation](https://github.com/dfds/shared-workflows#automation)
-	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
 	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows#build-lambda-and-upload-to-s3)
-	- [Multi architecture docker build](https://github.com/dfds/shared-workflows#multi-architecture-docker-build)
 	- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
+	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
+	- [Multi architecture docker build](https://github.com/dfds/shared-workflows#multi-architecture-docker-build)
 
 ## Security
 
@@ -38,24 +39,60 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
 ```
 
-### Run tfsec on pull requests
-
-Add comments to pull requests where tfsec checks have failed.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
+### Snyk
 
 How to invoke this shared workflow:
 
 ```yaml
-name: Run tfsec on pull requests
+name: Snyk
 
 on:
   pull_request:
     branches: [ "master", "main" ]
 
+  workflow_dispatch:
+
 jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add mask
+        run: |
+          echo "::add-mask::${{ secrets.SNYK_CE_TOKEN }}" 
+    
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Run Snyk to check for open source vulnerabilities
+        uses: snyk/actions/python@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_CE_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk-os.sarif --command=python3
+
+      - name: Run Snyk to check for code vulnerabilities
+        uses: snyk/actions/python@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_CE_TOKEN }}
+        with:
+          command: "code test"
+          args: --sarif-file-output=snyk-code.sarif
+
 ```
 
 ### Gitleaks
@@ -99,28 +136,27 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
 ```
 
-## Automation
+### Run tfsec on pull requests
 
-### Enforce PR labels
+Add comments to pull requests where tfsec checks have failed.
 
-Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
-
-[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
 
 How to invoke this shared workflow:
 
 ```yaml
-name: Enforce PR labels
+name: Run tfsec on pull requests
 
 on:
   pull_request:
-    types: [labeled, unlabeled, opened, edited, synchronize]
     branches: [ "master", "main" ]
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
 ```
+
+## Automation
 
 ### Build lambda and upload to S3
 
@@ -150,6 +186,50 @@ jobs:
     secrets:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
 
+```
+
+### Auto release
+
+Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
+
+[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Auto release
+
+on:
+  push:
+    branches: ["master", "main"]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+    # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
+    # secrets: inherit
+
+```
+
+### Enforce PR labels
+
+Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
+
+[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Enforce PR labels
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, opened, edited, synchronize]
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
 ```
 
 ### Multi architecture docker build
@@ -189,27 +269,4 @@ jobs:
 
       # Optional, sends a slack notification to the channel specified in the repository secrets
       slack-notification: true
-```
-
-### Auto release
-
-Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
-
-[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Auto release
-
-on:
-  push:
-    branches: ["master", "main"]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
-    # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
-    # secrets: inherit
-
 ```
