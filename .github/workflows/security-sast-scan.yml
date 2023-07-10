@@ -1,0 +1,47 @@
+name: Snyk
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add mask
+        run: |
+          echo "::add-mask::${{ secrets.SNYK_CE_TOKEN }}" 
+    
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+      - name: Build package
+        run: python -m build
+
+      - name: Run Snyk to check for open source vulnerabilities
+        uses: snyk/actions/python@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_CE_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk-os.sarif --command=python3
+
+      - name: Run Snyk to check for code vulnerabilities
+        uses: snyk/actions/python@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_CE_TOKEN }}
+        with:
+          command: "code test"
+          args: --sarif-file-output=snyk-code.sarif
