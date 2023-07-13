@@ -2,20 +2,24 @@
 name: Generate Merge Log and Open Pull Request
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       repository-owner:
         description: 'Repository owner'
         required: true
+        type: string
       repository-name:
         description: 'Repository name'
         required: true
+        type: string
       main-branch:
         description: 'Main branch name'
         required: true
+        type: string
       develop-branch:
         description: 'Develop branch name'
         required: true
+        type: string
 
 jobs:
   generate-merge-log-and-open-pr:
