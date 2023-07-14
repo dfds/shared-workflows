@@ -20,6 +20,8 @@ on:
         description: 'Develop branch name'
         required: true
         type: string
+env:
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   generate-merge-log-and-open-pr:
