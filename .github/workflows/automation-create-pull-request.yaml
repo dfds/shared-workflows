@@ -35,8 +35,6 @@ jobs:
           git log --merges --grep='^Merge pull request' --format="- PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > pr-merge.log
           git log --no-merges --format="- Non-PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.develop-branch }}..origin/${{ inputs.main-branch }} > non-pr-merge.log
 
-
-
       - name: Extract GitHub Handles from PR Log
         id: extract-pr-handles
         run: |
@@ -90,24 +88,29 @@ jobs:
         id: generate-final-non-pr-log
         run: |
           paste non-pr-merge.log non-pr-names.log | awk '{print $1,$2,$3,$4,$5,"\n  Author: @"$6,"\n  Date:",$7,$8}' > final-non-pr-merge.log
-
+      - name: Merge files
+        id: merge-files
+        run: |
+          {
+            echo "### Pull Requests"
+            echo "```markdown"
+            cat final-pr-merge.log
+            echo "```"
+            echo
+            echo "### Non-PR Commits"
+            echo "```markdown"
+            cat non-pr-merge.log
+            echo "```"
+            echo
+          } > body-text.log
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ github.token }}
-          commit-message: Generate Merge Log
-          branch: generate-merge-log
-          title: Merge Log
-          body: |
-            ### Pull Requests
-            ```markdown
-            $(cat final-pr-merge.log)
-            ```
-
-            ### Non-PR Commits
-            ```markdown
-            $(cat final-non-pr-merge.log)
-            ```
+          commit-message: Automated PR
+          branch: ${{ inputs.develop-branch }}
+          title: Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}
+          body-path: body-text.log
 
           base: ${{ inputs.main-branch }}
           repo: ${{ inputs.repository-owner }}/${{ inputs.repository-name }}
