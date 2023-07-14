@@ -101,18 +101,10 @@ jobs:
           cat non-pr-merge.log >> body-text.log
           echo "```" >> body-text.log
           echo "" >> body-text.log
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ github.token }}
-          commit-message: Automated PR
-          branch: auto-pr
-          title: Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}
-          body-path: body-text.log
-
-          base: ${{ inputs.main-branch }}
-          repo: ${{ inputs.repository-owner }}/${{ inputs.repository-name }}
-      - name: Merge and Cleanup
+      - name: Create PR
+        id: create-pr
+        run: |
+          gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body-text.log -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
+      - name: Cleanup
         run: |
           git reset --hard
-          git merge develop -m "auto pr"
