@@ -94,15 +94,15 @@ jobs:
         id: merge-files
         run: |
           echo "### Pull Requests" > body-text.log
-          echo "```markdown" >> body-text.log
+          echo "\`\`\`markdown" >> body-text.log
           cat final-pr-merge.log >> body-text.log
-          echo "```" >> body-text.log
-          echo "" >> body-text.log
+          echo "\`\`\`" >> body-text.log
+          echo >> body-text.log
           echo "### Non-PR Commits" >> body-text.log
-          echo "```markdown" >> body-text.log
+          echo "\`\`\`markdown" >> body-text.log
           cat non-pr-merge.log >> body-text.log
-          echo "```" >> body-text.log
-          echo "" >> body-text.log
+          echo "\`\`\`" >> body-text.log
+          echo >> body-text.log
       - name: Create PR
         id: create-pr
         run: |
