@@ -1,4 +1,3 @@
-
 name: Generate Merge Log and Open Pull Request
 
 on:
@@ -35,12 +34,12 @@ jobs:
         run: |
           git fetch --all
           git log --merges --grep='^Merge pull request' --format="- PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > pr-merge.log
-          git log --no-merges --format="- Non-PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.develop-branch }}..origin/${{ inputs.main-branch }} > non-pr-merge.log
+          git log --no-merges --format="- Non-PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > non-pr-merge.log
 
       - name: Extract GitHub Handles from PR Log
         id: extract-pr-handles
         run: |
-          awk -F':' '/PR:/ {print $2}' pr-merge.log | awk '{print $1}' > pr-handles.log
+          awk -F':' '/PR:/ {print $2}' pr-merge.log | awk '{$1=$1;print}' > pr-handles.log
 
       - name: Retrieve Pull Request Titles
         id: fetch-pr-titles
@@ -59,8 +58,9 @@ jobs:
         run: |
           while read -r handle; do
             response=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/search/users?q=$handle+in:email")
-            name=$(echo "$response" | jq -r '.items[0].login')
-            if [[ $(echo "$response" | jq -r '.total_count') == 1 ]]; then
+            count=$(echo "$response" | jq -r '.total_count')
+            if [[ $count == 1 ]]; then
+              name=$(echo "$response" | jq -r '.items[0].login')
               echo "$name"
             fi
           done < pr-handles.log > pr-names.log
@@ -68,20 +68,21 @@ jobs:
       - name: Generate Final PR Merge Log
         id: generate-final-pr-log
         run: |
-          paste pr-merge.log pr-names.log pr-titles.log | awk '{print $1,$2,$3,$4,$5,"\n  Author: @"$6,"\n  Date:",$7,$8,"\n  Title:",$9}' > final-pr-merge.log
+          paste pr-merge.log pr-names.log pr-titles.log | awk '{$1=$1;print}' | awk 'BEGIN{print "### Pull Requests"} {print "\n- PR: " $1 "\n  Author: @" $2 "\n  Date: " $3 " " $4 "\n  Title: " $5}' > final-pr-merge.log
 
       - name: Extract GitHub Handles from Non-PR Log
         id: extract-non-pr-handles
         run: |
-          awk -F':' '/Non-PR:/ {print $2}' non-pr-merge.log | awk '{print $1}' > non-pr-handles.log
+          awk -F':' '/Non-PR:/ {print $2}' non-pr-merge.log | awk '{$1=$1;print}' > non-pr-handles.log
 
       - name: Retrieve GitHub Names for Non-PRs
         id: fetch-non-pr-names
         run: |
           while read -r handle; do
             response=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/search/users?q=$handle+in:email")
-            name=$(echo "$response" | jq -r '.items[0].login')
-            if [[ $(echo "$response" | jq -r '.total_count') == 1 ]]; then
+            count=$(echo "$response" | jq -r '.total_count')
+            if [[ $count == 1 ]]; then
+              name=$(echo "$response" | jq -r '.items[0].login')
               echo "$name"
             fi
           done < non-pr-handles.log > non-pr-names.log
@@ -89,24 +90,18 @@ jobs:
       - name: Generate Final Non-PR Merge Log
         id: generate-final-non-pr-log
         run: |
-          paste non-pr-merge.log non-pr-names.log | awk '{print $1,$2,$3,$4,$5,"\n  Author: @"$6,"\n  Date:",$7,$8}' > final-non-pr-merge.log
+          paste non-pr-merge.log non-pr-names.log | awk '{$1=$1;print}' | awk 'BEGIN{print "### Non-PR Commits"} {print "\n- Non-PR: " $1 "\n  Author: @" $2 "\n  Date: " $3 " " $4}' > final-non-pr-merge.log
+
       - name: Merge files
         id: merge-files
         run: |
-          echo "### Pull Requests" > body-text.log
-          echo "\`\`\`markdown" >> body-text.log
-          cat final-pr-merge.log >> body-text.log
-          echo "\`\`\`" >> body-text.log
-          echo >> body-text.log
-          echo "### Non-PR Commits" >> body-text.log
-          echo "\`\`\`markdown" >> body-text.log
-          cat non-pr-merge.log >> body-text.log
-          echo "\`\`\`" >> body-text.log
-          echo >> body-text.log
+          cat final-pr-merge.log final-non-pr-merge.log > body-text.log
+
       - name: Create PR
         id: create-pr
         run: |
           gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body-text.log -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
+
       - name: Cleanup
         run: |
           git reset --hard
