@@ -32,8 +32,8 @@ jobs:
       - name: Generate Merge Log
         run: |
           git fetch --all
-          git log --merges --grep='^Merge pull request' --format="- PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ github.inputs.main-branch }}..origin/${{ github.inputs.develop-branch }} > pr-merge.log
-          git log --no-merges --format="- Non-PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ github.inputs.develop-branch }}..origin/${{ github.inputs.main-branch }} > non-pr-merge.log
+          git log --merges --grep='^Merge pull request' --format="- PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > pr-merge.log
+          git log --no-merges --format="- Non-PR: %s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.develop-branch }}..origin/${{ inputs.main-branch }} > non-pr-merge.log
 
 
 
@@ -47,7 +47,7 @@ jobs:
         run: |
           while read -r handle; do
             pr_number="${handle#*#}"
-            response=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.inputs.repository-owner }}/${{ github.inputs.repository-name }}/pulls/$pr_number")
+            response=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ inputs.repository-owner }}/${{ inputs.repository-name }}/pulls/$pr_number")
             if [[ $(echo "$response" | jq -r '.message') != "Not Found" ]]; then
               title=$(echo "$response" | jq -r '.title')
               echo "$title"
@@ -109,5 +109,5 @@ jobs:
             $(cat final-non-pr-merge.log)
             ```
 
-          base: ${{ github.inputs.main-branch }}
-          repo: ${{ github.inputs.repository-owner }}/${{ github.inputs.repository-name }}
+          base: ${{ inputs.main-branch }}
+          repo: ${{ inputs.repository-owner }}/${{ inputs.repository-name }}
