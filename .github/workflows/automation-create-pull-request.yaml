@@ -35,6 +35,7 @@ jobs:
         run: |
           git fetch --all
           git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad%n" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > pr-merge.log
+          cat pr-merge.log
       - name: Merge files
         id: merge-files
         run: |
