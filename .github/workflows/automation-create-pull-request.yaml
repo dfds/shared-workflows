@@ -34,20 +34,13 @@ jobs:
       - name: Generate Merge Log
         run: |
           git fetch --all
-          git log --merges --format="%s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > pr-merge.log
-          git log --no-merges --format="%s%n  Author: %ae%n  Date: %ad" origin/${{ inputs.develop-branch }}..origin/${{ inputs.main-branch }} > non-pr-merge.log
-
+          git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad%n" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > pr-merge.log
       - name: Merge files
         id: merge-files
         run: |
           echo "### Pull Requests" > body-text.log
           echo "\`\`\`markdown" >> body-text.log
           cat pr-merge.log >> body-text.log
-          echo "\`\`\`" >> body-text.log
-          echo >> body-text.log
-          echo "### Non-PR Commits" >> body-text.log
-          echo "\`\`\`markdown" >> body-text.log
-          cat non-pr-merge.log >> body-text.log
           echo "\`\`\`" >> body-text.log
           echo >> body-text.log
       - name: Create PR
