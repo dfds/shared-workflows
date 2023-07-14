@@ -91,26 +91,28 @@ jobs:
       - name: Merge files
         id: merge-files
         run: |
-          {
-            echo "### Pull Requests"
-            echo "```markdown"
-            cat final-pr-merge.log
-            echo "```"
-            echo
-            echo "### Non-PR Commits"
-            echo "```markdown"
-            cat non-pr-merge.log
-            echo "```"
-            echo
-          } > body-text.log
+          echo "### Pull Requests" > body-text.log
+          echo "```markdown" >> body-text.log
+          cat final-pr-merge.log >> body-text.log
+          echo "```" >> body-text.log
+          echo "" >> body-text.log
+          echo "### Non-PR Commits" >> body-text.log
+          echo "```markdown" >> body-text.log
+          cat non-pr-merge.log >> body-text.log
+          echo "```" >> body-text.log
+          echo "" >> body-text.log
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ github.token }}
           commit-message: Automated PR
-          branch: ${{ inputs.develop-branch }}
+          branch: auto-pr
           title: Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}
           body-path: body-text.log
 
           base: ${{ inputs.main-branch }}
           repo: ${{ inputs.repository-owner }}/${{ inputs.repository-name }}
+      - name: Merge and Cleanup
+        run: |
+          git reset --hard
+          git merge develop -m "auto pr"
