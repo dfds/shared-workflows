@@ -45,7 +45,7 @@ jobs:
           git remote prune origin &>/dev/null
 
           # Compare the lists of PR's contained in branches, and output result
-          comm -23 inthis.txt notinthis.txt | sed "s,  origin/pr/,g" > pr-numbers.txt
+          comm -23 inthis.txt notinthis.txt | sed "s,  origin/pr/,,g" > pr-numbers.txt
 
           # Clean up temp files
           rm inthis.txt
