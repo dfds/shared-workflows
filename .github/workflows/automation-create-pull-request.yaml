@@ -4,10 +4,6 @@ name: Generate Merge Log and Open Pull Request
 on:
   workflow_call:
     inputs:
-      repository-owner:
-        description: 'Repository owner'
-        required: true
-        type: string
       repository-name:
         description: 'Repository name'
         required: true
@@ -55,8 +51,7 @@ jobs:
         id: fetch-pr-titles
         run: |
           while read -r pr_number; do
-            response=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ inputs.repository-owner }}/${{ inputs.repository-name }}/pulls/$pr_number")
-            
+            response=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ inputs.repository-name }}/pulls/$pr_number")        
 
             if [[ $(echo "$response" | jq -r '.message') != "Not Found" ]]; then
               state=$(echo "$response" | jq -r '.state')
@@ -87,17 +82,20 @@ jobs:
       - name: Create Body Text
         id: create-body-text
         run: |
-          echo "### Pull Requests" > body.txt
-          echo "\`\`\`markdown" >> body.txt
-          cat prs.txt >> body.txt
-          echo "\`\`\`" >> body.txt
-          echo >> body.txt
+          if [[  -s prs.txt ]]; then
+            echo "### Pull Requests" > body.txt
+            echo "\`\`\`markdown" >> body.txt
+            cat prs.txt >> body.txt
+            echo "\`\`\`" >> body.txt
+            echo >> body.txt
+          fi
 
       - name: Create PR
         id: create-pr
         run: |
-          gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body.txt -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
-
+          if [[ -s prs.txt ]]; then
+               gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body.txt -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
+          fi
       - name: Cleanup
         run: |
           git reset --hard
