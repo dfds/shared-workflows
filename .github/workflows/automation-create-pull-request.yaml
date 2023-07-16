@@ -47,53 +47,63 @@ jobs:
           rm inthis.txt
           rm notinthis.txt
 
-      - name: Retrieve Pull Request Titles
-        id: fetch-pr-titles
+      - name: Retrieve PR Info
+        id: retrieve-pr-info
         run: |
           while read -r pr_number; do
-            response=$(curl -s -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ inputs.repository-name }}/pulls/$pr_number")        
-
-            if [[ $(echo "$response" | jq -r '.message') != "Not Found" ]]; then
-              state=$(echo "$response" | jq -r '.state')
-              merged=$(echo "$response" | jq -r '.merged')
+            response=$(curl -s -H -o resp.json "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ inputs.repository-name }}/pulls/$pr_number")        
+            
+            if [[ $(cat resp.json | jq -r '.message') != "Not Found" ]]; then
+              state=$(cat resp.json | jq -r '.state')
+              merged=$(cat resp.json | jq -r '.merged')
 
                if [[ $state == "closed" && $merged == "true" ]]; then
-                title=$(echo "$response" | jq -r '.title')
-                url=$(echo "$response" | jq -r '.url')
-                date=$(echo "$response" | jq -r '.merged_at')
-                user_handle=$(echo "$response" | jq -r '.user.login')
+                title=$(cat resp.json | jq -r '.title')
+                url=$(cat resp.json | jq -r '.url')
+                date=$(cat resp.json | jq -r '.merged_at')
+                user_handle=$(cat resp.json | jq -r '.user.login')
 
-                echo "$title (#$pr_number)\n" 
-                echo "@$user_handle\n"
-                echo "$"
+                echo "$title (#$pr_number)" 
+                echo "Author: @$user_handle"
+                echo "Merged at: $date"
+                echo "Link: $url"
+                echo ""
               fi
             fi
           done < pr-numbers.txt > prs.txt
-
           rm pr-numbers.txt
-      - name: Check if any PRs
-        id: check-if-any-prs
+      - name: Fetch non-PR commits
+        id: fetch-nonpr-commits
         run: |
-          if [[ ! -s prs.txt ]]; then
-            echo "::warning::No PRs found in ${{ inputs.develop-branch }} not found in ${{ inputs.main-branch }}. Skipping PR creation"
-            exit 0
-          fi
-
+          git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad" origin/${{ inputs.main-branch }}..${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
         run: |
+          touch body.txt
           if [[  -s prs.txt ]]; then
-            echo "### Pull Requests" > body.txt
+            echo "### Pull Requests" >> body.txt
             echo "\`\`\`markdown" >> body.txt
             cat prs.txt >> body.txt
             echo "\`\`\`" >> body.txt
             echo >> body.txt
           fi
+          if [[  -s commits.txt ]]; then
+            echo "### Non-PR commits" >> body.txt
+            echo "\`\`\`markdown" >> body.txt
+            cat commits.txt >> body.txt
+            echo "\`\`\`" >> body.txt
+            echo >> body.txt
+          fi
+          
+          if [[ ! -s body.txt ]]; then
+            echo "::warning::No changes found in ${{ inputs.develop-branch }} not found in ${{ inputs.main-branch }}. Skipping PR creation"
+            exit 0
+          fi
 
       - name: Create PR
         id: create-pr
         run: |
-          if [[ -s prs.txt ]]; then
+          if [[ -s body.txt ]]; then
                gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body.txt -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
           fi
       - name: Cleanup
