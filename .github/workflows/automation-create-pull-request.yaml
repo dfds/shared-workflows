@@ -52,7 +52,7 @@ jobs:
         id: retrieve-pr-info
         run: |
           while read -r pr_number; do
-            response=$(curl -s -H -o resp.json "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ inputs.repository-name }}/pulls/$pr_number")        
+            response=$(curl -s -o resp.json -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ inputs.repository-name }}/pulls/$pr_number")        
             
             if [[ $(cat resp.json | jq -r '.message') != "Not Found" ]]; then
               state=$(cat resp.json | jq -r '.state')
@@ -78,7 +78,6 @@ jobs:
         run: |
           git fetch --all
           git fetch origin
-          rm commits.txt
           git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad%s" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
