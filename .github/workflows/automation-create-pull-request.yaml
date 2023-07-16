@@ -35,8 +35,8 @@ jobs:
           git fetch origin "+refs/pull/*/head:refs/remotes/origin/pr/*" &>/dev/null
 
           # Generate a list of all PR's contained in the specified branches
-          git branch -r --merged ${{inputs.develop-branch}} | grep "origin/pr/*" | sort > inthis.txt
-          git branch -r --merged ${{inputs.main-branch}} | grep "origin/pr/*" | sort > notinthis.txt
+          git branch -r --merged origin/${{inputs.develop-branch}} | grep "origin/pr/*" | sort > inthis.txt
+          git branch -r --merged origin/${{inputs.main-branch}} | grep "origin/pr/*" | sort > notinthis.txt
 
           # Clean up after getting all the PR head commits
           git remote prune origin &>/dev/null
@@ -78,6 +78,7 @@ jobs:
         run: |
           git fetch --all
           git fetch origin
+          rm commits.txt
           git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
