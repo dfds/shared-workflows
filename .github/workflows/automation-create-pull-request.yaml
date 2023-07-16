@@ -75,7 +75,7 @@ jobs:
       - name: Fetch non-PR commits
         id: fetch-nonpr-commits
         run: |
-          git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad" origin/${{ inputs.main-branch }}..${{ inputs.develop-branch }} > commits.txt
+          git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
         run: |
