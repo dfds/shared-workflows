@@ -67,8 +67,10 @@ jobs:
                 url=$(cat resp.json | jq -r '.url')
                 date=$(cat resp.json | jq -r '.merged_at')
                 user_handle=$(cat resp.json | jq -r '.user.login')
+                merge_commit_sha=$(cat resp.json | jq -r '.merge_commit_sha')
 
                 echo "$title (#$pr_number)" 
+                echo "Merge commit SHA: $merge_commit_sha"
                 echo "Author: @$user_handle"
                 echo "Merged at: $date"
                 echo "Link: $url"
@@ -81,7 +83,7 @@ jobs:
         id: fetch-nonpr-commits
         run: |
           git fetch --all
-          git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad%n" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
+          git log --no-merges --format="%s%nSHA:%H%nAuthor: %ae%nDate: %ad%n" --first-parent origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
         run: |
