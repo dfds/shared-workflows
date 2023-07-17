@@ -83,7 +83,7 @@ jobs:
         id: fetch-nonpr-commits
         run: |
           git fetch --all
-          git log --no-merges --format="%s%nSHA:%H%nAuthor: %ae%nDate: %ad%n" --first-parent origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
+          git log --no-merges --format="%s%nSHA: %H%nAuthor: %ae%nDate: %ad%n" --first-parent origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
         run: |
