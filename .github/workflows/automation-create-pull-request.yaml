@@ -28,7 +28,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ${{inputs.repository-name}}
-          path: main
 
       - name: Fetch Unmerged PRs
         id: fetch-unmerged-prs
