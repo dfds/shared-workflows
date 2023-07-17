@@ -16,10 +16,6 @@ on:
         description: 'Develop branch name'
         required: true
         type: string
-      reviewer:
-        description: 'Team or users to assign to review this PR'
-        required: true
-        type: string
 env:
   GH_TOKEN: ${{ github.token }}
 
@@ -116,5 +112,5 @@ jobs:
         id: create-pr
         run: |
           if [[ -s body.txt ]]; then
-            gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body.txt -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }} -r ${{inputs.reviewer}}
+            gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body.txt -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
           fi
