@@ -124,7 +124,9 @@ jobs:
         id: create-pr
         run: |
           if [[ -s body.txt ]]; then
-               gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body.txt -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
+            echo "body.txt:"
+            cat body.txt
+            #gh pr create --title "Automated PR - Merging ${{ inputs.develop-branch }} into ${{ inputs.main-branch }}" -F body.txt -B ${{ inputs.main-branch }} -H ${{ inputs.develop-branch }}
           fi
       - name: Cleanup
         run: |
