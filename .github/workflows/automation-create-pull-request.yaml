@@ -27,6 +27,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
+          repository: ${{inputs.repository-name}}
           path: main
 
       - name: Fetch Unmerged PRs
@@ -36,10 +37,6 @@ jobs:
           echo "name of repo: ${{ inputs.repository-name }}"
           echo "name of main branch: ${{inputs.main-branch}}"
           echo "name of develop branch: ${{ inputs.develop-branch }}"
-  
-          echo ""
-          git log --oneline origin/main
-          echo ""
   
           # Get all the Pull Request head commits
           git fetch origin "+refs/pull/*/head:refs/remotes/origin/pr/*" &>/dev/null
