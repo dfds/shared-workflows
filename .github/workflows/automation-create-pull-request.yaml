@@ -30,6 +30,11 @@ jobs:
       - name: Fetch Unmerged PRs
         id: fetch-unmerged-prs
         run: |
+        
+          echo "name of repo: ${{ inputs.repository-name }}"
+          echo "name of main branch: ${{inputs.main-branch}}"
+          echo "name of develop branch: ${{ inputs.develop-branch }}"
+          
           git fetch --all
           # Get all the Pull Request head commits
           git fetch origin "+refs/pull/*/head:refs/remotes/origin/pr/*" &>/dev/null
@@ -37,12 +42,24 @@ jobs:
           # Generate a list of all PR's contained in the specified branches
           git branch -r --merged origin/${{inputs.develop-branch}} | grep "origin/pr/*" | sort > inthis.txt
           git branch -r --merged origin/${{inputs.main-branch}} | grep "origin/pr/*" | sort > notinthis.txt
-
+          
+          echo "in develop branch:"
+          cat inthis.txt
+          echo ""
+          
+          echo "in main branch":
+          cat notinthis.txt
+          echo ""
+          
           # Clean up after getting all the PR head commits
           git remote prune origin &>/dev/null
 
           # Compare the lists of PR's contained in branches, and output result
           comm -23 inthis.txt notinthis.txt | sed "s,  origin/pr/,,g" > pr-numbers.txt
+          
+          echo "prs result"
+          cat pr-numbers.txt
+          echo ""
 
           # Clean up temp files
           rm inthis.txt
@@ -78,7 +95,7 @@ jobs:
         run: |
           git fetch --all
           git fetch origin
-          git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad%s%n" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
+          git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad%n" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
         run: |
