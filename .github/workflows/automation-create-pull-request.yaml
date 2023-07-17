@@ -34,6 +34,8 @@ jobs:
           echo "name of repo: ${{ inputs.repository-name }}"
           echo "name of main branch: ${{inputs.main-branch}}"
           echo "name of develop branch: ${{ inputs.develop-branch }}"
+          
+          git fetch --all
   
           # Get all the Pull Request head commits
           git fetch origin "+refs/pull/*/head:refs/remotes/origin/pr/*" &>/dev/null
