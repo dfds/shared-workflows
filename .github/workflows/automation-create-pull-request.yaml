@@ -33,12 +33,14 @@ jobs:
         id: fetch-unmerged-prs
         run: |
         
-          git pull
           echo "name of repo: ${{ inputs.repository-name }}"
           echo "name of main branch: ${{inputs.main-branch}}"
           echo "name of develop branch: ${{ inputs.develop-branch }}"
-          
-          git fetch --all
+  
+          echo ""
+          git log --oneline origin/main
+          echo ""
+  
           # Get all the Pull Request head commits
           git fetch origin "+refs/pull/*/head:refs/remotes/origin/pr/*" &>/dev/null
 
@@ -97,7 +99,6 @@ jobs:
         id: fetch-nonpr-commits
         run: |
           git fetch --all
-          git fetch origin
           git log --no-merges --format="%s%nAuthor: %ae%nDate: %ad%n" origin/${{ inputs.main-branch }}..origin/${{ inputs.develop-branch }} > commits.txt
       - name: Create Body Text
         id: create-body-text
