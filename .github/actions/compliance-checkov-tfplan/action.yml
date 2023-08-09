@@ -7,10 +7,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Control 6
-      shell: bash
-      run: |
-        echo "control 6"
     - name: Check tfplan json file
       shell: bash
       run: |
