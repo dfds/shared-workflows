@@ -15,6 +15,8 @@ runs:
     - uses: actions/checkout@v3
       with:
         repository: 'dfds/iac-terraform-policies'
+        token: ${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
+        fetch-depth: 0
 
     # - run: ls -la # TODO: do a lookup on tfplan.json
     #   shell: bash
@@ -59,4 +61,4 @@ runs:
     #   shell: bash
     #   run: |
     #     checkov \
-    #       -f tfplan.json --external-checks-git https://github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
+    #       -f tfplan.json --external-checks-git https://github.com/dfds/IAC-TERRAFORM-POLICIES.git//checkov --skip-check '*_AWS_*'
