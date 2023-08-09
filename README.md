@@ -243,7 +243,7 @@ jobs:
           terraform init
           terraform plan -out tfplan
           terraform show -json tfplan > ../tfplan.json
-      - uses: dfds/shared-workflows/.github/actions/validate-tf-policies@master
+      - uses: dfds/shared-workflows/.github/actions/compliance-checkov-tfplan@master
         with:
           tf-policy-repo-token: ${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
 ```
