@@ -17,7 +17,6 @@ runs:
         fi
         echo "tfplan.json exits."
         cat tfplan.json | jq '.' > tfplan.json
-        cat tfplan.json
         echo "tfplan.json is valid json file."
     - name: Install checkov
       run: |
