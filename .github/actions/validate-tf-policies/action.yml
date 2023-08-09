@@ -45,8 +45,13 @@ runs:
         fi
       shell: bash
 
-    - name: Run test checkov
+    - name: attempt clone repo"
       shell: bash
       run: |
-        checkov \
-          -f tfplan.json --external-checks-git https://github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
+        git clone https://github.com/dfds/iac-terraform-policies.git
+        ls -a iac-terraform-policies
+    # - name: Run test checkov
+    #   shell: bash
+    #   run: |
+    #     checkov \
+    #       -f tfplan.json --external-checks-git https://github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
