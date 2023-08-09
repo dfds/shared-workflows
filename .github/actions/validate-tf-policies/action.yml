@@ -12,11 +12,15 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
-      with:
-        repository: 'dfds/iac-terraform-policies'
-        token: ${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
-        fetch-depth: 0
+    - name: attempt clone repo"
+      shell: bash
+      run: |
+        echo "=================="
+        echo $TF_POLICY_REPO_TOKEN
+        echo "=================="
+
+        git clone https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git
+        ls -a iac-terraform-policies
 
     # - run: ls -la # TODO: do a lookup on tfplan.json
     #   shell: bash
