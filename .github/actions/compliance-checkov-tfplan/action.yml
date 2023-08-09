@@ -7,10 +7,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Control 4
+    - name: Control 5
       shell: bash
       run: |
-        echo "control 4"
+        echo "control 5"
     - name: Check tfplan json file
       shell: bash
       run: |
@@ -21,7 +21,6 @@ runs:
         fi
         echo "tfplan.json exits."
         cat tfplan.json | jq '.' > tfplan.json
-        cat tfplan.json
         echo "tfplan.json is valid json file."
     - name: Install checkov
       run: |
