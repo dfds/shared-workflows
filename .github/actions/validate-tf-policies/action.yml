@@ -12,6 +12,9 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - run: ls -la
+      shell: bash
+      name: list files
     - run: echo Hello ${{ inputs.who-to-greet }}.
       shell: bash
     - id: random-number-generator
