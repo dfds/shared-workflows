@@ -5,14 +5,16 @@ A repository for shared action workflows, best practice for new and existing rep
 Shared workflows:
 - [Security](https://github.com/dfds/shared-workflows#security)
 	- [Run Trivy IAC with Quality GAte](https://github.com/dfds/shared-workflows#run-trivy-iac-with-quality-gate)
-	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
 	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
+	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 - [Automation](https://github.com/dfds/shared-workflows#automation)
-	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
-	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows#build-lambda-and-upload-to-s3)
-	- [Multi architecture docker build](https://github.com/dfds/shared-workflows#multi-architecture-docker-build)
 	- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
+	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
+	- [Multi architecture docker build](https://github.com/dfds/shared-workflows#multi-architecture-docker-build)
+	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows#build-lambda-and-upload-to-s3)
+- [Compliance](https://github.com/dfds/shared-workflows#compliance)
+	- [Checkov Github Actions Step](https://github.com/dfds/shared-workflows#checkov-github-actions-step)
 
 ## Security
 
@@ -36,26 +38,6 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
-```
-
-### Run tfsec on pull requests
-
-Add comments to pull requests where tfsec checks have failed.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Run tfsec on pull requests
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
 ```
 
 ### Gitleaks
@@ -99,7 +81,50 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
 ```
 
+### Run tfsec on pull requests
+
+Add comments to pull requests where tfsec checks have failed.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Run tfsec on pull requests
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
+```
+
 ## Automation
+
+### Auto release
+
+Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
+
+[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Auto release
+
+on:
+  push:
+    branches: ["master", "main"]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+    # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
+    # secrets: inherit
+
+```
 
 ### Enforce PR labels
 
@@ -120,36 +145,6 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
-```
-
-### Build lambda and upload to S3
-
-This workflow builds lambda code and uploads the zip file to S3 bucket. The instructions for building the zip package need to be specified in a Makefile. The workflow works with Go and Python lambdas.
-
-How to invoke this shared workflow:
-
-```yaml
-name: Build lambda and upload to S3
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  build-and-upload-to-s3:
-    name: build-and-upload-to-s3
-    uses: dfds/shared-workflows/.github/workflows/automation-build-and-upload-to-s3.yml@master
-    with:
-      role-session-name: upload-crl-importer-lambda #Session name
-      working-directory: ./crl-importer-lambda #The working directory that includes the Makefile
-      lambda-package-name: crl-importer-lambda.zip #The lambda package name
-      s3-location: dfds-ce-shared-artifacts/iam-rolesanywhere-lambdas
-      go-version: "1.20" #Should be specified only for Go lambdas
-      cache-dependency-path: ./crl-importer-lambda/go.mod/go.sum #Should be specified only for Go lambdas
-      arguments: PACKAGE_NAME=${{ matrix.lambda-name }} #The arguments to be passed to make
-    secrets:
-      role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
-
 ```
 
 ### Multi architecture docker build
@@ -191,25 +186,64 @@ jobs:
       slack-notification: true
 ```
 
-### Auto release
+### Build lambda and upload to S3
 
-Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
-
-[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
+This workflow builds lambda code and uploads the zip file to S3 bucket. The instructions for building the zip package need to be specified in a Makefile. The workflow works with Go and Python lambdas.
 
 How to invoke this shared workflow:
 
 ```yaml
-name: Auto release
+name: Build lambda and upload to S3
 
 on:
-  push:
-    branches: ["master", "main"]
+  pull_request:
+    branches: [ "master", "main" ]
 
 jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
-    # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
-    # secrets: inherit
+  build-and-upload-to-s3:
+    name: build-and-upload-to-s3
+    uses: dfds/shared-workflows/.github/workflows/automation-build-and-upload-to-s3.yml@master
+    with:
+      role-session-name: upload-crl-importer-lambda #Session name
+      working-directory: ./crl-importer-lambda #The working directory that includes the Makefile
+      lambda-package-name: crl-importer-lambda.zip #The lambda package name
+      s3-location: dfds-ce-shared-artifacts/iam-rolesanywhere-lambdas
+      go-version: "1.20" #Should be specified only for Go lambdas
+      cache-dependency-path: ./crl-importer-lambda/go.mod/go.sum #Should be specified only for Go lambdas
+      arguments: PACKAGE_NAME=${{ matrix.lambda-name }} #The arguments to be passed to make
+    secrets:
+      role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
 
+```
+
+## Compliance
+
+### Checkov Github Actions Step
+
+A Github Action step that runs Checkov against a Terraform plan file. Policies are defined in dfds/iac-terraform-policies repo.
+
+How to invoke this shared workflow:
+
+```yaml
+name: Checkov Github Actions Step
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  run_tfplan_and_validate:
+    runs-on: ubuntu-latest
+    name: A job to call the shared workflow
+    steps:
+      - uses: actions/checkout@v3
+      - name: Terraform Plan and validate
+        run: |
+          cd terraform
+          terraform init
+          terraform plan -out tfplan
+          terraform show -json tfplan > ../tfplan.json
+      - uses: dfds/shared-workflows/.github/actions/validate-tf-policies@master
+        with:
+          tf-policy-repo-token: ${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
 ```
