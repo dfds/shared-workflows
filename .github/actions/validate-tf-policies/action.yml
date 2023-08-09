@@ -5,6 +5,9 @@ inputs:
     description: 'Who to greet'
     required: true
     default: 'World'
+  TF_POLICY_REPO_TOKEN: # id of input
+    description: 'Token for TF policy repo'
+    required: true
 outputs:
   random-number:
     description: "Random number"
@@ -12,57 +15,41 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: attempt clone repo"
+    - run: ls -la # TODO: do a lookup on tfplan.json
+      shell: bash
+      name: list files
+    - run: echo Hello ${{ inputs.who-to-greet }}.
+      shell: bash
+    - id: random-number-generator
+      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+      shell: bash
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Check file
       shell: bash
       run: |
-        echo "=================="
-        echo $TF_POLICY_REPO_TOKEN
-        echo "=================="
+        jsonfile=tfplan.json
+        if [ ! -f $jsonfile ]; then
+          echo "file does not exist"
+          exit 1
+        fi
+        echo "tfplan.json exits."
+    - name: Install checkov
+      run: |
+        pip3 install checkov
+        # check checkov is installed
+        if [[ $(pip3 list | grep -i "checkov") =~ "checkov" ]]; then
+          echo "checkov is installed"
+        else
+          echo "checkov is not installed"
+          echo "Install checkov."
+          exit 1
+        fi
+      shell: bash
 
-        git clone https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git
-        ls -a iac-terraform-policies
-
-    # - run: ls -la # TODO: do a lookup on tfplan.json
-    #   shell: bash
-    #   name: list files
-    # - run: echo Hello ${{ inputs.who-to-greet }}.
-    #   shell: bash
-    # - id: random-number-generator
-    #   run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
-    #   shell: bash
-    # - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-    #   shell: bash
-
-    # - name: Check file
-    #   shell: bash
-    #   run: |
-    #     jsonfile=tfplan.json
-    #     if [ ! -f $jsonfile ]; then
-    #       echo "file does not exist"
-    #       exit 1
-    #     fi
-    #     echo "tfplan.json exits."
-    # - name: Install checkov
-    #   run: |
-    #     pip3 install checkov
-    #     # check checkov is installed
-    #     if [[ $(pip3 list | grep -i "checkov") =~ "checkov" ]]; then
-    #       echo "checkov is installed"
-    #     else
-    #       echo "checkov is not installed"
-    #       echo "Install checkov."
-    #       exit 1
-    #     fi
-    #   shell: bash
-
-
-    # - name: attempt clone repo"
-    #   shell: bash
-    #   run: |
-    #     git clone https://github.com/dfds/iac-terraform-policies.git
-    #     ls -a iac-terraform-policies
-    # - name: Run test checkov
-    #   shell: bash
-    #   run: |
-    #     checkov \
-    #       -f tfplan.json --external-checks-git https://github.com/dfds/IAC-TERRAFORM-POLICIES.git//checkov --skip-check '*_AWS_*'
+    - name: Run test checkov
+      shell: bash
+      run: |
+        checkov \
+          -f tfplan.json --external-checks-git https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
