@@ -16,9 +16,8 @@ runs:
           exit 1
         fi
         echo "tfplan.json exits."
-        cat tfplan.json | jq '.' > tfplan.json
-        cat tfplan.json
-        echo "tfplan.json is valid json file."
+        cat tfplan.json | jq '.' > out.json
+        cat out.json
     - name: Install checkov
       run: |
         pip3 install checkov
@@ -37,4 +36,4 @@ runs:
       env:
         TF_POLICY_REPO_TOKEN: ${{ inputs.tf-policy-repo-token }}
       run: |
-        checkov -f tfplan.json --external-checks-git https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
+        checkov -f out.json --external-checks-git https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
