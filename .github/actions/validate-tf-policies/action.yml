@@ -34,6 +34,6 @@ runs:
     - name: Run test checkov
       shell: bash
       env:
-        TF_POLICY_REPO_TOKEN: ${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
+        TF_POLICY_REPO_TOKEN: ${{ inputs.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
       run: |
         checkov -f out.json --external-checks-git https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
