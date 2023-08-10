@@ -1,9 +1,9 @@
 name: 'Run Checkov'
 description: 'Check policies against Terraform plan file'
-# inputs:
-#   tf-policy-repo-token: # id of input
-#     description: 'Token for TF policy repo'
-#     required: true
+inputs:
+  tf-policy-repo-token: # id of input
+    description: 'Token for TF policy repo'
+    required: true
 runs:
   using: "composite"
   steps:
