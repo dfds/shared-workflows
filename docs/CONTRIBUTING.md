@@ -1,6 +1,6 @@
 # How to Contribute
 
-Contributions to this project are very welcome! We follow a fairly standard pull request process for contributions. It is **NOT** recommended to create a PR before a branch is ready for review, because every commit to that PR will trigger a new version of the readme. This will eventually break the flow and block a PR from being merged.
+Contributions to this project are very welcome! We follow a fairly standard pull request process for contributions. It is **NOT** recommended to create a PR before a branch is ready for review, because every commit to that PR will trigger a new version of the readme.
 
 ## How to add a workflow
 
