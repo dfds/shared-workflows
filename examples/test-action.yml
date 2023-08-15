@@ -8,6 +8,5 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     steps:
       - uses: dfds/shared-workflows/.github/actions/test-action.yml@feat/add-action-support
