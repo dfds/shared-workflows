@@ -4,4 +4,5 @@ runs:
   using: ubuntu-latest
   steps:
     - name: Echo hello
+      shell: bash
       run: echo "Hello"
