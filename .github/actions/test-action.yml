@@ -1,0 +1,7 @@
+name: Test action
+
+runs:
+  using: ubuntu-latest
+  steps:
+    - name: Echo hello
+      run: echo "Hello"
