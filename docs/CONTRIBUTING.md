@@ -1,12 +1,12 @@
 # How to Contribute
 
-Contributions to this project are very welcome! We follow a fairly standard pull request process for contributions.
+Contributions to this project are very welcome! We follow a fairly standard pull request process for contributions. It is **NOT** recommended to create a PR before a branch is ready for review, because every commit to that PR will trigger a new version of the readme. This will eventually break the flow and block a PR from being merged.
 
 ## How to add a workflow
 
 - Clone the repository
 - Create a new branch
-- Add your shared workflow in `.github/workflows` folder
+- Add your shared workflow in `.github/workflows` folder or action in `.github/actions`
 - Add an example of usage in the `examples` folder
 
 ### Naming convention
@@ -17,11 +17,17 @@ Example:
 <br />
 `security-`gitleaks.yml
 
-The workflow filename and example filename must match.
+The workflow/action filename and example filename must match.
 
 Example:
 <br />
 .github/workflows/`security-gitleaks.yml`
+<br />
+examples/`security-gitleaks.yml`
+<br />
+or:
+<br />
+.github/actions/`security-gitleaks.yml`
 <br />
 examples/`security-gitleaks.yml`
 

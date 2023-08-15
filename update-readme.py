@@ -29,7 +29,7 @@ bodyReadmeConetent = []
 collection = {}
 
 # Create example collection
-for example in os.listdir(examplesDir):
+for example in sorted(os.listdir(examplesDir)):
     examplePath = os.path.join(examplesDir, example)
 
     # Ignore folders here
