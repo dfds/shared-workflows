@@ -1,7 +1,7 @@
 name: Test action
 
 runs:
-  using: ubuntu-latest
+  using: "composite"
   steps:
     - name: Echo hello
       shell: bash
