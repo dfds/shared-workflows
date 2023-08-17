@@ -1,0 +1,22 @@
+name: Checkov Github Actions Step
+description: A Github Action step that runs Checkov against a Terraform plan file. Policies are defined in dfds/iac-terraform-policies repo.
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  run_tfplan_and_validate:
+    runs-on: ubuntu-latest
+    name: A job to call the shared workflow
+    steps:
+      - uses: actions/checkout@v3
+      - name: Terraform Plan and validate
+        run: |
+          cd terraform
+          terraform init
+          terraform plan -out tfplan
+          terraform show -json tfplan > ../tfplan.json
+      - uses: dfds/shared-workflows/.github/actions/compliance-checkov-tfplan@master
+        with:
+          tf-policy-repo-token: ${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
