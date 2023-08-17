@@ -3,16 +3,16 @@
 Contributions to this project are very welcome! We follow a fairly standard pull request process for contributions. It is **NOT** recommended to create a PR before a branch is ready for review, because every commit to that PR will trigger a new version of the readme.
 
 Index:
-- [Workflows](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#how-to-add-a-workflow)
-	- [Workflow naming convention](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#workflow-naming-convention)
-	- [How to structure the workflow](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#how-to-structure-the-workflow)
-	- [How to structure the example workflow](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#how-to-structure-the-example-workflow)
-- [Actions](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#how-to-add-an-action)
-	- [Action naming convention](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#action-naming-convention)
-	- [How to structure the action](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#how-to-structure-the-action)
-	- [How to structure the example action](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#how-to-structure-the-example-action)
-- [Updating the README](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#updating-the-readme)
-- [Create a pull request](https://github.com/dfds/shared-workflows/docs/CONTRIBUTING.md#create-a-pull-request)
+- [Workflows](#how-to-add-a-workflow)
+	- [Workflow naming convention](#workflow-naming-convention)
+	- [How to structure the workflow](#how-to-structure-the-workflow)
+	- [How to structure the example workflow](#how-to-structure-the-example-workflow)
+- [Actions](#how-to-add-an-action)
+	- [Action naming convention](#action-naming-convention)
+	- [How to structure the action](#how-to-structure-the-action)
+	- [How to structure the example action](#how-to-structure-the-example-action)
+- [Updating the README](#updating-the-readme)
+- [Create a pull request](#create-a-pull-request)
 
 ## How to add a workflow
 
