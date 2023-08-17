@@ -1,5 +1,5 @@
-# Shared workflows
+# Shared workflows and actions
 
-A repository for shared action workflows, best practice for new and existing repositories. We welcome contributions. See [Contributing](docs/CONTRIBUTING.md) to get started.
+A repository for shared github workflows and actions, best practice for new and existing repositories. We welcome contributions. See [Contributing](docs/CONTRIBUTING.md) to get started.
 
-Shared workflows:
+Shared workflows and actions:
