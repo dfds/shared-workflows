@@ -2,6 +2,11 @@ name: Create repository release
 
 on:
   workflow_call:
+    inputs:
+      tag_prefix:
+        required: false
+        type: string
+        default: ""
     outputs:
       semver:
         description: "The semantic version of the release"
@@ -22,4 +27,4 @@ jobs:
         id: auto-release-id
         with:
           bump_version_scheme: patch
-          tag_prefix: ""
+          tag_prefix: ${{ inputs.tag_prefix }}

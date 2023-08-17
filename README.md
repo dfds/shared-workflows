@@ -4,17 +4,38 @@ A repository for shared action workflows, best practice for new and existing rep
 
 Shared workflows:
 - [Security](https://github.com/dfds/shared-workflows#security)
-	- [Run Trivy IAC with Quality GAte](https://github.com/dfds/shared-workflows#run-trivy-iac-with-quality-gate)
-	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
+	- [Run Trivy IAC with Quality GAte](https://github.com/dfds/shared-workflows#run-trivy-iac-with-quality-gate)
 	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
+	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
 - [Automation](https://github.com/dfds/shared-workflows#automation)
-	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
 	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows#build-lambda-and-upload-to-s3)
 	- [Multi architecture docker build](https://github.com/dfds/shared-workflows#multi-architecture-docker-build)
 	- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
+	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
 
 ## Security
+
+### Gitleaks
+
+Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos. You have to add GITLEAKS_LICENSE secret to your repository, it does not work with organization secrets. The license key is stored in 1Password.
+
+[Marketplace](https://github.com/marketplace/actions/gitleaks)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Gitleaks
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
+    secrets: inherit
+```
 
 ### Run Trivy IAC with Quality GAte
 
@@ -38,47 +59,6 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
 ```
 
-### Run tfsec on pull requests
-
-Add comments to pull requests where tfsec checks have failed.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Run tfsec on pull requests
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
-```
-
-### Gitleaks
-
-Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos. You have to add GITLEAKS_LICENSE secret to your repository, it does not work with organization secrets. The license key is stored in 1Password.
-
-[Marketplace](https://github.com/marketplace/actions/gitleaks)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Gitleaks
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
-    secrets: inherit
-```
-
 ### Run tfsec and upload
 
 This Github Action will run the tfsec sarif check then add the report to the repo for upload.
@@ -99,28 +79,27 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
 ```
 
-## Automation
+### Run tfsec on pull requests
 
-### Enforce PR labels
+Add comments to pull requests where tfsec checks have failed.
 
-Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
-
-[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
 
 How to invoke this shared workflow:
 
 ```yaml
-name: Enforce PR labels
+name: Run tfsec on pull requests
 
 on:
   pull_request:
-    types: [labeled, unlabeled, opened, edited, synchronize]
     branches: [ "master", "main" ]
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
 ```
+
+## Automation
 
 ### Build lambda and upload to S3
 
@@ -212,4 +191,29 @@ jobs:
     # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
     # secrets: inherit
 
+    # In order to add prefix to the tag:
+    with:
+      tag_prefix: "your_prefix"
+
+```
+
+### Enforce PR labels
+
+Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
+
+[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+
+How to invoke this shared workflow:
+
+```yaml
+name: Enforce PR labels
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, opened, edited, synchronize]
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
 ```
