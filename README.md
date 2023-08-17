@@ -8,6 +8,9 @@ Shared workflows and actions:
 		- [Auto release](#auto-release)
 		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
+- [Compliance](#compliance)
+	- actions
+		- [Checkov Github Actions Step](#checkov-github-actions-step)
 - [Security](#security)
 	- workflows
 		- [Gitleaks](#gitleaks)
@@ -117,6 +120,40 @@ jobs:
 
       # Optional, sends a slack notification to the channel specified in the repository secrets
       slack-notification: true
+```
+
+## Compliance
+
+### Checkov Github Actions Step
+
+_This is an action_
+
+A Github Action step that runs Checkov against a Terraform plan file. Policies are defined in dfds/iac-terraform-policies repo.
+
+How to invoke this action:
+
+```yaml
+name: Checkov Github Actions Step
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  run_tfplan_and_validate:
+    runs-on: ubuntu-latest
+    name: A job to call the shared workflow
+    steps:
+      - uses: actions/checkout@v3
+      - name: Terraform Plan and validate
+        run: |
+          cd terraform
+          terraform init
+          terraform plan -out tfplan
+          terraform show -json tfplan > ../tfplan.json
+      - uses: dfds/shared-workflows/.github/actions/compliance-checkov-tfplan@master
+        with:
+          tf-policy-repo-token: ${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}
 ```
 
 ## Security
