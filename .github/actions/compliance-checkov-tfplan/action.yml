@@ -1,0 +1,39 @@
+name: 'Run Checkov'
+description: 'Check policies against Terraform plan file'
+inputs:
+  tf-policy-repo-token: # id of input
+    description: 'Token for TF policy repo'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Check tfplan json file
+      shell: bash
+      run: |
+        jsonfile=tfplan.json
+        if [ ! -f $jsonfile ]; then
+          echo "file does not exist"
+          exit 1
+        fi
+        echo "tfplan.json exits."
+        cat tfplan.json | jq '.' > out.json
+        cat out.json
+    - name: Install checkov
+      run: |
+        pip3 install checkov
+        # check checkov is installed
+        if [[ $(pip3 list | grep -i "checkov") =~ "checkov" ]]; then
+          echo "checkov is installed"
+        else
+          echo "checkov is not installed"
+          echo "Install checkov."
+          exit 1
+        fi
+      shell: bash
+
+    - name: Run test checkov
+      shell: bash
+      env:
+        TF_POLICY_REPO_TOKEN: ${{ inputs.tf-policy-repo-token }}
+      run: |
+        checkov -f out.json --external-checks-git https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
