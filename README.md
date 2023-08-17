@@ -1,111 +1,58 @@
-# Shared workflows
+# Shared workflows and actions
 
-A repository for shared action workflows, best practice for new and existing repositories. We welcome contributions. See [Contributing](docs/CONTRIBUTING.md) to get started.
+A repository for shared github workflows and actions, best practice for new and existing repositories. We welcome contributions. See [Contributing](docs/CONTRIBUTING.md) to get started.
 
-Shared workflows:
-- [Security](https://github.com/dfds/shared-workflows#security)
-	- [Gitleaks](https://github.com/dfds/shared-workflows#gitleaks)
-	- [Run Trivy IAC with Quality GAte](https://github.com/dfds/shared-workflows#run-trivy-iac-with-quality-gate)
-	- [Run tfsec and upload](https://github.com/dfds/shared-workflows#run-tfsec-and-upload)
-	- [Run tfsec on pull requests](https://github.com/dfds/shared-workflows#run-tfsec-on-pull-requests)
-- [Automation](https://github.com/dfds/shared-workflows#automation)
-	- [Build lambda and upload to S3](https://github.com/dfds/shared-workflows#build-lambda-and-upload-to-s3)
-	- [Multi architecture docker build](https://github.com/dfds/shared-workflows#multi-architecture-docker-build)
-	- [Auto release](https://github.com/dfds/shared-workflows#auto-release)
-	- [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels)
-
-## Security
-
-### Gitleaks
-
-Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos. You have to add GITLEAKS_LICENSE secret to your repository, it does not work with organization secrets. The license key is stored in 1Password.
-
-[Marketplace](https://github.com/marketplace/actions/gitleaks)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Gitleaks
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
-    secrets: inherit
-```
-
-### Run Trivy IAC with Quality GAte
-
-This Github Action will run the trivy IAC check and block if High or Critical issues are found.
-
-[Marketplace](https://github.com/marketplace/actions/run-trivy-iac-check)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Run Trivy IAC with Quality GAte
-
-on:
-  push:
-    branches: [ "master", "main" ]
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
-```
-
-### Run tfsec and upload
-
-This Github Action will run the tfsec sarif check then add the report to the repo for upload.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Run tfsec and upload
-
-on:
-  push:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
-```
-
-### Run tfsec on pull requests
-
-Add comments to pull requests where tfsec checks have failed.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
-
-How to invoke this shared workflow:
-
-```yaml
-name: Run tfsec on pull requests
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
-```
+Shared workflows and actions:
+- [Automation](#automation)
+	- workflows
+		- [Auto release](#auto-release)
+		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
+		- [Multi architecture docker build](#multi-architecture-docker-build)
+- [Security](#security)
+	- workflows
+		- [Gitleaks](#gitleaks)
+		- [Run tfsec on pull requests](#run-tfsec-on-pull-requests)
+		- [Run tfsec and upload](#run-tfsec-and-upload)
+		- [Run Trivy IAC with Quality GAte](#run-trivy-iac-with-quality-gate)
 
 ## Automation
 
+### Auto release
+
+_This is a workflow_
+
+Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
+
+[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
+
+How to invoke this workflow:
+
+```yaml
+name: Auto release
+
+on:
+  push:
+    branches: ["master", "main"]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
+    # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
+    # secrets: inherit
+
+    # In order to add prefix to the tag:
+    with:
+      tag_prefix: "your_prefix"
+
+```
+
 ### Build lambda and upload to S3
+
+_This is a workflow_
 
 This workflow builds lambda code and uploads the zip file to S3 bucket. The instructions for building the zip package need to be specified in a Makefile. The workflow works with Go and Python lambdas.
 
-How to invoke this shared workflow:
+How to invoke this workflow:
 
 ```yaml
 name: Build lambda and upload to S3
@@ -133,9 +80,11 @@ jobs:
 
 ### Multi architecture docker build
 
+_This is a workflow_
+
 All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
 
-How to invoke this shared workflow:
+How to invoke this workflow:
 
 ```yaml
 name: Multi architecture docker build
@@ -170,50 +119,95 @@ jobs:
       slack-notification: true
 ```
 
-### Auto release
+## Security
 
-Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
+### Gitleaks
 
-[Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
+_This is a workflow_
 
-How to invoke this shared workflow:
+Gitleaks is a SAST tool for detecting and preventing hardcoded secrets like passwords, API keys, and tokens in git repos. You have to add GITLEAKS_LICENSE secret to your repository, it does not work with organization secrets. The license key is stored in 1Password.
 
-```yaml
-name: Auto release
+[Marketplace](https://github.com/marketplace/actions/gitleaks)
 
-on:
-  push:
-    branches: ["master", "main"]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@master
-    # Note, make sure to use `secrets: inherit` if utilizing the organizational secret `GH_RELEASE`
-    # secrets: inherit
-
-    # In order to add prefix to the tag:
-    with:
-      tag_prefix: "your_prefix"
-
-```
-
-### Enforce PR labels
-
-Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
-
-[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
-
-How to invoke this shared workflow:
+How to invoke this workflow:
 
 ```yaml
-name: Enforce PR labels
+name: Gitleaks
 
 on:
   pull_request:
-    types: [labeled, unlabeled, opened, edited, synchronize]
     branches: [ "master", "main" ]
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
+    uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
+    secrets: inherit
+```
+
+### Run tfsec on pull requests
+
+_This is a workflow_
+
+Add comments to pull requests where tfsec checks have failed.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
+
+How to invoke this workflow:
+
+```yaml
+name: Run tfsec on pull requests
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
+```
+
+### Run tfsec and upload
+
+_This is a workflow_
+
+This Github Action will run the tfsec sarif check then add the report to the repo for upload.
+
+[Marketplace](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload)
+
+How to invoke this workflow:
+
+```yaml
+name: Run tfsec and upload
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
+```
+
+### Run Trivy IAC with Quality GAte
+
+_This is a workflow_
+
+This Github Action will run the trivy IAC check and block if High or Critical issues are found.
+
+[Marketplace](https://github.com/marketplace/actions/run-trivy-iac-check)
+
+How to invoke this workflow:
+
+```yaml
+name: Run Trivy IAC with Quality GAte
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
 ```
