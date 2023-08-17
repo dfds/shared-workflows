@@ -20,7 +20,7 @@ jobs:
     # This makes sure the action only runs on PR's
     # and comments on PR's matching the string
     if: |
-      github.event.issue.pull_request ||
+      github.event.pull_request ||
       (
         github.event.issue.pull_request &&
         contains(github.event.comment.body, 'build readme')
