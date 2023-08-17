@@ -2,13 +2,29 @@ name: Build README
 
 on:
   pull_request:
-    branches: [ "master", "main" ]
+    branches: ['master', 'main']
+    types: ['opened', 'edited']
     paths:
+      - '.github/actions/**'
+      - '.github/workflows/**'
       - 'examples/**'
+      - 'headline.md'
+      - 'update-readme.py'
+  issue_comment:
+    types:
+      - created
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # This makes sure the action only runs on PR's
+    # and comments on PR's matching the string
+    # if: |
+    #   github.event.pull_request ||
+    #   (
+    #     github.event.issue.pull_request &&
+    #     contains(github.event.comment.body, 'build readme')
+    #   )
     steps:
     - name: Check out repo
       uses: actions/checkout@master
@@ -23,7 +39,7 @@ jobs:
     - name: Install dependencies
       run: python -m pip install -r requirements.txt
     - name: Update README
-      run: |-
+      run: |
         python update-readme.py
     - name: Commit and push if changed
       run: |
