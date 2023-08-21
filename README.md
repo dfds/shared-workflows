@@ -7,6 +7,7 @@ Shared workflows and actions:
 	- workflows
 		- [Auto release](#auto-release)
 		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
+		- [Enforce PR labels](#enforce-pr-labels)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
 - [Compliance](#compliance)
 	- actions
@@ -79,6 +80,29 @@ jobs:
     secrets:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
 
+```
+
+### Enforce PR labels
+
+_This is a workflow_
+
+Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
+
+[Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
+
+How to invoke this workflow:
+
+```yaml
+name: Enforce PR labels
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, opened, edited, synchronize]
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
 ```
 
 ### Multi architecture docker build
