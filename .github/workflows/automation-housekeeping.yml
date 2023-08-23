@@ -16,7 +16,7 @@ on:
       branch_protection:
         description: 'Enable branch protection on default branch'
         required: false
-        default: true
+        default: false
         type: boolean
 
 env:
