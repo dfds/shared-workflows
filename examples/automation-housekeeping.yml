@@ -1,0 +1,18 @@
+name: Housekeeping
+description: Sets repository settings to a standard that is used across the organization.
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-multi-build.yml@master
+    secrets: inherit
+    with:
+      # Optional, Enable delete head branch after merge
+      delete_head_branch: true
+      # Optional, Enable merging pull requests via squashed commit
+      sqaush_merge: true
+      # Optional, Enable branch protection on default branch
+      branch_protection: true

@@ -8,6 +8,7 @@ Shared workflows and actions:
 		- [Auto release](#auto-release)
 		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
 		- [Enforce PR labels](#enforce-pr-labels)
+		- [Housekeeping](#housekeeping)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
 - [Compliance](#compliance)
 	- actions
@@ -103,6 +104,34 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
+```
+
+### Housekeeping
+
+_This is a workflow_
+
+Sets repository settings to a standard that is used across the organization.
+
+How to invoke this workflow:
+
+```yaml
+name: Housekeeping
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-multi-build.yml@master
+    secrets: inherit
+    with:
+      # Optional, Enable delete head branch after merge
+      delete_head_branch: true
+      # Optional, Enable merging pull requests via squashed commit
+      sqaush_merge: true
+      # Optional, Enable branch protection on default branch
+      branch_protection: true
 ```
 
 ### Multi architecture docker build
