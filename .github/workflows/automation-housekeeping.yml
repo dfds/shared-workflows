@@ -19,6 +19,9 @@ on:
         default: true
         type: boolean
 
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   delete-head-branch:
     if: inputs.delete_head_branch == true
