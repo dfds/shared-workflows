@@ -20,7 +20,7 @@ on:
         type: boolean
 
 env:
-  GH_TOKEN: ${{ github.GITHUB_TOKEN }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   delete-head-branch:
