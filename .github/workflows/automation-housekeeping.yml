@@ -19,28 +19,25 @@ on:
         default: true
         type: boolean
 
+env:
+  GH_TOKEN: ${{ github.token }}
+
 jobs:
   delete-head-branch:
     if: inputs.delete_head_branch == true
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Enable delete head branch after merge
         run: gh repo edit ${GITHUB_REPOSITORY} --delete-branch-on-merge
   sqaush-merge:
     if: inputs.sqaush_merge == true
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Enable merging pull requests via squashed commit
         run: gh repo edit ${GITHUB_REPOSITORY} --enable-squash-merge
   branch-protection:
     if: inputs.branch_protection == true
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@master
