@@ -129,7 +129,7 @@ jobs:
       # Optional, Enable delete head branch after merge
       delete_head_branch: true
       # Optional, Enable merging pull requests via squashed commit
-      sqaush_merge: true
+      squash_merge: true
       # Optional, Enable branch protection on default branch
       branch_protection: true
 ```
