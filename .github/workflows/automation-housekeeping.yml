@@ -8,7 +8,7 @@ on:
         required: false
         default: false
         type: boolean
-      sqaush_merge:
+      squash_merge:
         description: 'Enable merging pull requests via squashed commit'
         required: false
         default: false
@@ -29,8 +29,8 @@ jobs:
     steps:
       - name: Enable delete head branch after merge
         run: gh repo edit ${GITHUB_REPOSITORY} --delete-branch-on-merge
-  sqaush-merge:
-    if: inputs.sqaush_merge == true
+  squash-merge:
+    if: inputs.squash_merge == true
     runs-on: ubuntu-latest
     steps:
       - name: Enable merging pull requests via squashed commit
