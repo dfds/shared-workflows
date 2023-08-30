@@ -10,10 +10,12 @@ runs:
     - name: Check tfplan json file
       shell: bash
       run: |
+        echo "Check env"
+        printenv
+        echo "==================="
         echo "Check tfplan json file"
         cat tfplan.json
         echo "==================="
-
         echo "${{ github.action_path }}"
         ls -a "${{ github.action_path }}"
         echo "==================="
