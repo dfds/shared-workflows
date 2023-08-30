@@ -1,9 +1,10 @@
 name: Generate comment for Renovate PR from template
 on:
-  pull_request:
-    types: [opened]
-
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      pr-template-filepath:
+        required: true
+        type: string
 
 jobs:
   example_comment_pr:
@@ -16,5 +17,5 @@ jobs:
       - name: PR comment with file
         uses: thollander/actions-comment-pull-request@v2
         with:
-          filePath: .github/pull_request_template.md
-          GITHUB_TOKEN: ${{ secrets.REPO_PR_COMMENT_TOKEN }}
+          filePath: ${{ inputs.pr-template-filepath }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
