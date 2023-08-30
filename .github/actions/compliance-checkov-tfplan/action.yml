@@ -10,6 +10,10 @@ runs:
     - name: Check tfplan json file
       shell: bash
       run: |
+        echo "Check tfplan json file"
+        cat tfplan.json
+        echo "==================="
+
         jsonfile=tfplan.json
         if [ ! -f $jsonfile ]; then
           echo "file does not exist"
