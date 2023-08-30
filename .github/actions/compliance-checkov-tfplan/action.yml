@@ -18,6 +18,11 @@ runs:
         echo "tfplan.json exits."
         cat $jsonfile | jq '.' > out.json
         cat out.json
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+        cache: 'pip'
     - name: Install checkov
       run: |
         pip3 install checkov
