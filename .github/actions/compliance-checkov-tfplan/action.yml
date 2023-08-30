@@ -10,10 +10,7 @@ runs:
     - name: Check tfplan json file
       shell: bash
       run: |
-        echo "Check env"
-        echo ${{ env.RUNNER_TEMP }}
-        echo "===================="
-        jsonfile=tfplan.json
+        jsonfile=$RUNNER_TEMP/tfplan.json
         if [ ! -f $jsonfile ]; then
           echo "file does not exist"
           exit 1
