@@ -17,22 +17,6 @@ runs:
         fi
         echo "tfplan.json exits."
         cat $jsonfile | jq '.' > $RUNNER_TEMP/out.json
-    # - name: Set up Python
-    #   uses: actions/setup-python@v3
-    #   with:
-    #     python-version: '3.10'
-    # - name: Install checkov
-    #   run: |
-    #     pip3 install checkov
-    #     # check checkov is installed
-    #     if [[ $(pip3 list | grep -i "checkov") =~ "checkov" ]]; then
-    #       echo "checkov is installed"
-    #     else
-    #       echo "checkov is not installed"
-    #       echo "Install checkov."
-    #       exit 1
-    #     fi
-    #   shell: bash
 
     - name: Run test checkov
       shell: bash
@@ -41,19 +25,3 @@ runs:
       run: |
         # checkov -f out.json --external-checks-git https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
         docker run --rm -v $RUNNER_TEMP/:/files bridgecrew/checkov -f=/files/$RUNNER_TEMP/out.json --external-checks-git https://$TF_POLICY_REPO_TOKEN@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
-        # exitCode=$?
-
-        # if [ $exitCode == 1 ]; then
-        #   Message="<p><b> This pull request does not conform with DFDS Taggig Policy, You can view more information in the test file.</b></p>"
-        #   echo -e "$Message"
-        # fi
-
-        # # if [[ "${{ parameters.passiveMode}}" == "True" ]]; then
-        # #   if [ $exitCode == 1 ]; then
-        # #     echo "issues found warning"
-        # #   fi
-        # #   exit 0
-        # # else
-        # #   exit $exitCode
-        # # fi
-        # exit $exitCode
