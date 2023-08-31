@@ -123,7 +123,7 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-multi-build.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation-housekeeping.yml@master
     secrets: inherit
     with:
       # Optional, Enable delete head branch after merge
@@ -138,7 +138,7 @@ jobs:
 
 _This is a workflow_
 
-All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
+All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
 
 How to invoke this workflow:
 
