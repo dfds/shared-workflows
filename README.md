@@ -173,6 +173,9 @@ jobs:
 
       # Optional, sends a slack notification to the channel specified in the repository secrets
       slack-notification: true
+
+      # Optional, the path to the Dockerfile you wish to build. Defaults to Dockerfile at the repository root.
+      docker-dockerfile-path: "./path/to/Dockerfile"
 ```
 
 ## Compliance
