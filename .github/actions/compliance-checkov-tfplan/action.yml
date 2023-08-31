@@ -18,6 +18,8 @@ runs:
         echo "tfplan.json exits."
         cat $jsonfile | jq '.' > $RUNNER_TEMP/out.json
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
     - name: Run test checkov
       shell: bash
       env:
