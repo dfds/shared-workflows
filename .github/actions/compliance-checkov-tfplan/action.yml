@@ -20,7 +20,6 @@ runs:
         fi
         echo "tfplan.json exits."
         cat $jsonfile | jq '.' > out.json
-        cat out.json
     - name: Install checkov
       run: |
         pip3 install checkov
