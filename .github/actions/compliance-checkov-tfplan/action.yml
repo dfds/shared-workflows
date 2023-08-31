@@ -1,9 +1,9 @@
 name: 'Run Checkov'
 description: 'Check policies against Terraform plan file'
 inputs:
-  # tf-policy-repo-token: # id of input
-  #   description: 'Token for TF policy repo'
-  #   required: true
+  tf-policy-repo-token: # id of input
+    description: 'Token for TF policy repo'
+    required: true
   file-path:
     description: 'Path to the tfplan file'
     required: true
@@ -36,7 +36,5 @@ runs:
 
     - name: Run test checkov
       shell: bash
-      # env:
-      #   GITHUB_TOKEN: ${{ inputs.tf-policy-repo-token }}
       run: |
-        checkov -f out.json --external-checks-git https://${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}@github.com/dfds/iac-terraform-policies.git//checkov --skip-check 'CKV_*'
+        checkov -f out.json --external-checks-git https://${{ inputs.tf-policy-repo-token }}@github.com/dfds/iac-terraform-policies.git//checkov --skip-check 'CKV_*'
