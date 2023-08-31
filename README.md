@@ -138,7 +138,7 @@ jobs:
 
 _This is a workflow_
 
-All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
+All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
 
 How to invoke this workflow:
 
@@ -173,6 +173,9 @@ jobs:
 
       # Optional, sends a slack notification to the channel specified in the repository secrets
       slack-notification: true
+
+      # Optional, the path to the Dockerfile you wish to build. Defaults to Dockerfile at the repository root.
+      docker-dockerfile-path: "./path/to/Dockerfile"
 ```
 
 ## Compliance
