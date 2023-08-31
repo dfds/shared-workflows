@@ -21,6 +21,7 @@ runs:
         echo "tfplan.json exits."
         cat $jsonfile | jq '.' > out.json
         cat out.json
+     ## Below is working code for checkov
     - name: Install checkov
       run: |
         pip3 install checkov
@@ -36,7 +37,5 @@ runs:
 
     - name: Run test checkov
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
       run: |
-        checkov -f out.json --external-checks-git https://${{ github.token }}@github.com/dfds/iac-terraform-policies.git//checkov --skip-check '*_AWS_*'
+        checkov -f out.json --external-checks-git https://${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}@github.com/dfds/iac-terraform-policies.git//checkov --skip-check 'CKV_*'
