@@ -21,7 +21,6 @@ runs:
         echo "tfplan.json exits."
         cat $jsonfile | jq '.' > out.json
         cat out.json
-     ## Below is working code for checkov
     - name: Install checkov
       run: |
         pip3 install checkov
