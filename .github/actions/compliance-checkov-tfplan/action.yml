@@ -19,7 +19,7 @@ runs:
           exit 1
         fi
         echo "tfplan.json exits."
-        cat tfplan.json | jq '.' > out.json
+        cat $jsonfile | jq '.' > out.json
         cat out.json
     - name: Install checkov
       run: |
