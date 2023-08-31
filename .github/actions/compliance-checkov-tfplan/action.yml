@@ -37,4 +37,4 @@ runs:
     - name: Run test checkov
       shell: bash
       run: |
-        checkov -f out.json --external-checks-git https://${{ secrets.GH_REPO_READ_IAC_TERRAFORM_POLICIES }}@github.com/dfds/iac-terraform-policies.git//checkov --skip-check 'CKV_*'
+        checkov -f out.json --external-checks-git https://${{ inputs.tf-policy-repo-token }}@github.com/dfds/iac-terraform-policies.git//checkov --skip-check 'CKV_*'
