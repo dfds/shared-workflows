@@ -123,7 +123,7 @@ on:
 
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/automation-multi-build.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation-housekeeping.yml@master
     secrets: inherit
     with:
       # Optional, Enable delete head branch after merge
