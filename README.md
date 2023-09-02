@@ -194,6 +194,8 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/automation-renovate-pr-commenter.yml@master
+    with:
+      pr-template-filepath: .github/pull_request_template.md
 ```
 
 ## Compliance
