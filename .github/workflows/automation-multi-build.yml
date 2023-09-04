@@ -28,6 +28,10 @@ on:
       slack-notification:
         required: false
         type: boolean
+      docker-dockerfile-path:
+        required: false
+        type: string
+        default: Dockerfile
 
 jobs:
   test-container:
@@ -129,6 +133,7 @@ jobs:
           push: true
           tags: ${{ needs.collect-metadata.outputs.tags }}
           labels: ${{ needs.collect-metadata.outputs.labels }}
+          file: ${{ inputs.docker-dockerfile-path }}
       - name: Docker Hub README and Description
         if: "${{ inputs.docker-readme-path != '' }}"
         uses: dfds/dockerhub-description@main

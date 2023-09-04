@@ -7,10 +7,12 @@ Index:
 	- [Workflow naming convention](#workflow-naming-convention)
 	- [How to structure the workflow](#how-to-structure-the-workflow)
 	- [How to structure the example workflow](#how-to-structure-the-example-workflow)
+  - [Modifying an existing workflow](#modifying-an-existing-workflow)
 - [Actions](#how-to-add-an-action)
 	- [Action naming convention](#action-naming-convention)
 	- [How to structure the action](#how-to-structure-the-action)
 	- [How to structure the example action](#how-to-structure-the-example-action)
+  - [Modifying an existing action](#modifying-an-existing-action)
 - [Updating the README](#updating-the-readme)
 - [Create a pull request](#create-a-pull-request)
 
@@ -69,6 +71,10 @@ jobs:
 ```
 
 The example must be completely copy-paste ready and **not** a draft or WIP. If any modifications are required by the consumer, provide this information in the description of the example.
+
+### Modifying an existing Workflow
+
+If you need to modify an existing workflow please make best effort to ensure it is backwards compatible. If any new inputs are added please add them to the example action.
 
 ## How to add an action
 
@@ -147,9 +153,16 @@ jobs:
 
 The example must be completely copy-paste ready and **not** a draft or WIP. If any modifications are required by the consumer, provide this information in the description of the example.
 
+### Modifying an existing Action
+
+If you need to modify an existing action please make best effort to ensure it is backwards compatible. If any new inputs are added please add them to the example action.
+
 ## Updating the README
 
 The README is automatically updated if the guidelines are respected. Those changes will be appended to your PR, please verify when the automation has run.
+
+> [!WARNING]
+> Please **DO NOT** update the README manually. Ensure you update the examples if you modify an existing workflow or action to have the README updated automatically.
 
 ## Create a pull request
 
