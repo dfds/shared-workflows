@@ -1,0 +1,12 @@
+name: Add comment from PR template on Renovate pull requests
+description: Enables using PR template on pull requests generated from RenovateBot
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-renovate-pr-commenter.yml@master
+    with:
+      pr-template-filepath: .github/pull_request_template.md

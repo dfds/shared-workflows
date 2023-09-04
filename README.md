@@ -10,6 +10,7 @@ Shared workflows and actions:
 		- [Enforce PR labels](#enforce-pr-labels)
 		- [Housekeeping](#housekeeping)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
+		- [Add comment from PR template on Renovate pull requests](#add-comment-from-pr-template-on-renovate-pull-requests)
 - [Compliance](#compliance)
 	- actions
 		- [Checkov Github Actions Step](#checkov-github-actions-step)
@@ -173,6 +174,28 @@ jobs:
 
       # Optional, sends a slack notification to the channel specified in the repository secrets
       slack-notification: true
+```
+
+### Add comment from PR template on Renovate pull requests
+
+_This is a workflow_
+
+Enables using PR template on pull requests generated from RenovateBot
+
+How to invoke this workflow:
+
+```yaml
+name: Add comment from PR template on Renovate pull requests
+
+on:
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-renovate-pr-commenter.yml@master
+    with:
+      pr-template-filepath: .github/pull_request_template.md
 ```
 
 ## Compliance

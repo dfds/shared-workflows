@@ -1,0 +1,21 @@
+name: Generate comment for Renovate PR from template
+on:
+  workflow_call:
+    inputs:
+      pr-template-filepath:
+        required: true
+        type: string
+
+jobs:
+  example_comment_pr:
+    if: github.triggering_actor == 'devex-sa'
+    runs-on: ubuntu-latest
+    name: Comment the Pull request
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: PR comment with file
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: ${{ inputs.pr-template-filepath }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
