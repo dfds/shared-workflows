@@ -45,7 +45,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.role-to-assume }}
           role-session-name: ${{ inputs.role-session-name }}
