@@ -64,7 +64,6 @@ jobs:
 
                if [[ $state == "closed" && $merged == "true" ]]; then
                 title=$(cat resp.json | jq -r '.title')
-                url=$(cat resp.json | jq -r '.html_url')
                 date=$(cat resp.json | jq -r '.merged_at')
                 user_handle=$(cat resp.json | jq -r '.user.login')
                 merge_commit_sha=$(cat resp.json | jq -r '.merge_commit_sha')
@@ -73,7 +72,6 @@ jobs:
                 echo "Merge commit SHA: $merge_commit_sha"
                 echo "Author: @$user_handle"
                 echo "Merged at: $date"
-                echo "Link: $url"
                 echo ""
               fi
             fi
@@ -95,9 +93,7 @@ jobs:
           fi
           if [[  -s commits.txt ]]; then
             echo "### Non-PR commits" >> body.txt
-            echo "\`\`\`markdown" >> body.txt
             cat commits.txt >> body.txt
-            echo "\`\`\`" >> body.txt
             echo >> body.txt
           fi
           
