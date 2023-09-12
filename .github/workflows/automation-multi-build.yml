@@ -81,7 +81,7 @@ jobs:
     steps:
       - name: Docker meta
         id: docker-metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           # list of Docker images to use as base name for tags
           images: |
