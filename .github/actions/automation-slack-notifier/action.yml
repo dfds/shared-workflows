@@ -8,7 +8,7 @@ runs:
       with:
         fetch-depth: 0
         repository: 'dfds/shared-workflows'
-        ref: 'feat/automation-slack-notifier'
+        ref: 'feat/slack-notifications'
     
     - name: Set up Go
       uses: actions/setup-go@v4
