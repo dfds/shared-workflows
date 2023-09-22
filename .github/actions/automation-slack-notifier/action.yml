@@ -5,6 +5,10 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+        repository: 'shared-workflows'
+        ref: 'feat/automation-slack-notifier'
     
     - name: Set up Go
       uses: actions/setup-go@v4
