@@ -15,16 +15,5 @@ runs:
       with:
         go-version: '1.21'
 
-    - name: Testing go
-      shell: bash
-      run: |
-        go version
-        go env
-    
-    # - name: Build
-    #   run: go build -v ./...
-    
-    - name: Run
-      shell: bash
-      run: |
-        ls -lha
+    - name: Build
+      run: go build -v .github/actions/automation-slack-notifier/main.go
