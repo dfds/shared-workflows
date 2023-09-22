@@ -3,7 +3,31 @@ description: Alerts to a slack channel
 runs:
   using: "composite"
   steps:
-    - name: Send alert
+    - name: Checkout
+      uses: actions/checkout@master
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Testing go
       shell: bash
       run: |
-        echo 'Hej'
+        go version
+        go env
+      # run: |
+      #   go version
+      #   go env
+      #   go get -v ./...
+      #   go build -v ./...
+      #   go test -v ./...
+    # - name: Build
+    #   run: go build -v ./...
+
+    # - name: Test
+    #   run: go test -v ./...
+
+      # shell: bash
+      # run: |
+      #   echo 'Hej'
