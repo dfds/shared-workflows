@@ -16,18 +16,11 @@ runs:
       run: |
         go version
         go env
-      # run: |
-      #   go version
-      #   go env
-      #   go get -v ./...
-      #   go build -v ./...
-      #   go test -v ./...
+    
     # - name: Build
     #   run: go build -v ./...
-
-    # - name: Test
-    #   run: go test -v ./...
-
-      # shell: bash
-      # run: |
-      #   echo 'Hej'
+    
+    - name: Run
+      shell: bash
+      run: |
+        ls -lha
