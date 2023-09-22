@@ -16,4 +16,5 @@ runs:
         go-version: '1.21'
 
     - name: Build
+      shell: bash
       run: go build -v .github/actions/automation-slack-notifier/main.go
