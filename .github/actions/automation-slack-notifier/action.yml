@@ -1,0 +1,9 @@
+name: Slack Notifier
+description: Alerts to a slack channel
+runs:
+  using: "composite"
+  steps:
+    - name: Send alert
+      shell: bash
+      run: |
+        echo 'Hej'
