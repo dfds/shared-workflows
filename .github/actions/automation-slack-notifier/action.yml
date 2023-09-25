@@ -31,7 +31,7 @@ runs:
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
-        SLACK_TITLE: "${GITHUB_REPOSITORY} says:"
+        SLACK_TITLE: "${{ github.event.repository.name }} says:"
         SLACK_MESSAGE: ${{ inputs.slack_message }}
         SLACK_ICON: ${{ inputs.slack_icon }}
         SLACK_USERNAME: ${{ inputs.slack_username }}
