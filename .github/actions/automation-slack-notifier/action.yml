@@ -5,9 +5,9 @@ input:
   slack_webhook:
     description: 'Slack webhook'
     required: true
-  slack_title:
-    description: 'Slack title'
-    required: false
+  # slack_title:
+  #   description: 'Slack title'
+  #   required: false
   slack_message:
     description: 'Slack message'
     required: true
@@ -31,7 +31,7 @@ runs:
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
-        SLACK_TITLE: ${{ inputs.slack_title }}
+        SLACK_TITLE: "${GITHUB_REPOSITORY} says:"
         SLACK_MESSAGE: ${{ inputs.slack_message }}
         SLACK_ICON: ${{ inputs.slack_icon }}
         SLACK_USERNAME: ${{ inputs.slack_username }}
