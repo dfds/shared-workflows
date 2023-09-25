@@ -9,9 +9,6 @@ input:
     description: 'Slack message'
     required: true
 
-env:
-  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-
 runs:
   using: "composite"
   steps:
