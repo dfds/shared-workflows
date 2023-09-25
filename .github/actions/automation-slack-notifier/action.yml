@@ -1,20 +1,35 @@
 name: Slack Notifier
 description: Alerts to a slack channel
+
+input:
+  slack_webhook:
+    description: 'Slack webhook'
+    required: true
+  slack_channel:
+    description: 'Slack channel'
+    required: false
+  slack_title:
+    description: 'Slack title'
+    required: false
+  slack_message:
+    description: 'Slack message'
+    required: true
+  slack_icon:
+    description: 'Slack icon'
+    required: false
+    default: 'https://avatars.slack-edge.com/2023-09-22/5958091429776_0ed632ae5f2977693c7d_96.png'
+  slack_username:
+    description: 'Slack username'
+    required: false
+    default: 'GitHub Action Notification'
+  slack_color:
+    description: 'Slack color'
+    required: false
+    default: '#36a64f'
+
 runs:
   using: "composite"
   steps:
-    - name: Checkout
-      uses: actions/checkout@master
-      with:
-        fetch-depth: 0
-        repository: 'dfds/shared-workflows'
-        ref: 'feat/slack-notifications'
-    
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-
-    - name: Build
+    - name: Run
       shell: bash
-      run: go build -v .github/actions/automation-slack-notifier/main.go
+      run: echo "${{ inputs.slack_message }}"
