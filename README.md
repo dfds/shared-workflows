@@ -11,6 +11,8 @@ Shared workflows and actions:
 		- [Housekeeping](#housekeeping)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
 		- [Add comment from PR template on Renovate pull requests](#add-comment-from-pr-template-on-renovate-pull-requests)
+	- actions
+		- [Slack Notifier](#slack-notifier)
 - [Compliance](#compliance)
 	- actions
 		- [Checkov Github Actions Step](#checkov-github-actions-step)
@@ -139,7 +141,7 @@ jobs:
 
 _This is a workflow_
 
-All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
+All-in-one package that builds, tests, beautify and publishes a docker image for multiple architectures. This workflow uses the [Auto release](#auto-release) workflow to create a Github Release on push to master. You have to add DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets to your repository to use this workflow. To use the slack integration you will also have to add the SLACK_WEBHOOK secret.
 
 How to invoke this workflow:
 
@@ -199,6 +201,35 @@ jobs:
     uses: dfds/shared-workflows/.github/workflows/automation-renovate-pr-commenter.yml@master
     with:
       pr-template-filepath: .github/pull_request_template.md
+```
+
+### Slack Notifier
+
+_This is an action_
+
+Alerts to a slack channel. Create your webhook on our [Slack Bot here](https://api.slack.com/apps/A04U1JJRPT9/incoming-webhooks). Add the webhook as a secret in your repository with the key `SLACK_WEBHOOK`.
+
+[Marketplace](https://github.com/marketplace/actions/slack-notify)
+
+How to invoke this action:
+
+```yaml
+name: Slack Notifier
+
+on:
+  workflow_dispatch:
+
+jobs:
+  slack-notifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify
+        if: failure()
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@feat/slack-notifications
+        with:
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          slack_message: 'Hmm something is wrong'
+
 ```
 
 ## Compliance
