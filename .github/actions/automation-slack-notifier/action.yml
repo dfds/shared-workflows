@@ -2,12 +2,15 @@ name: Slack Notifier
 description: Alerts to a slack channel
 
 input:
-  # slack_webhook:
-  #   description: 'Slack webhook'
-  #   required: true
+  slack_webhook:
+    description: 'Slack webhook as a secret'
+    required: true
   slack_message:
     description: 'Slack message'
     required: true
+
+env:
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 runs:
   using: "composite"
@@ -15,8 +18,7 @@ runs:
     - name: Run
       uses: rtCamp/action-slack-notify@v2
       env:
-        # SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_WEBHOOK: ${{ inputs.slack_webhook }}
         SLACK_TITLE: "${{ github.event.repository.name }} says:"
         SLACK_MESSAGE: ${{ inputs.slack_message }}
         SLACK_ICON: 'https://avatars.slack-edge.com/2023-09-22/5958091429776_0ed632ae5f2977693c7d_96.png'
