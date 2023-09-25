@@ -225,7 +225,7 @@ jobs:
     steps:
       - name: Notify
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@feat/slack-notifications
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
         with:
           slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
           slack_message: 'Hmm something is wrong'
