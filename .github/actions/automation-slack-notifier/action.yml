@@ -3,23 +3,23 @@ description: Alerts to a slack channel
 
 input:
   slack_webhook:
-    description: "Slack webhook"
+    description: 'Slack webhook'
     required: true
   slack_message:
-    description: "Slack message"
+    description: 'Slack message'
     required: true
   slack_icon:
-    description: "Slack icon"
+    description: 'Slack icon'
     required: false
-    default: "https://avatars.slack-edge.com/2023-09-22/5958091429776_0ed632ae5f2977693c7d_96.png"
+    default: 'https://avatars.slack-edge.com/2023-09-22/5958091429776_0ed632ae5f2977693c7d_96.png'
   slack_username:
-    description: "Slack username"
+    description: 'Slack username'
     required: false
-    default: "GitHub Action Notification"
-  slack_color:
-    description: "Slack color"
-    required: false
-    default: "bad"
+    default: 'GitHub Action Notification'
+  # slack_color:
+  #   description: 'Slack color, use '
+  #   required: false
+  #   default: 'bad'
 
 runs:
   using: "composite"
@@ -32,5 +32,5 @@ runs:
         SLACK_MESSAGE: ${{ inputs.slack_message }}
         SLACK_ICON: ${{ inputs.slack_icon }}
         SLACK_USERNAME: ${{ inputs.slack_username }}
-        SLACK_COLOR: ${{ inputs.slack_color }}
-        SLACK_FOOTER: ""
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_FOOTER: "Powered by dfds/shared-workflows"
