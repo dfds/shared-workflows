@@ -19,7 +19,7 @@ on:
         default: false
         type: boolean
       status_checks:
-        description: 'Enable mandatory status checks on PR's'
+        description: 'Enable mandatory status checks on PRs'
         required: false
         default: false
         type: boolean
