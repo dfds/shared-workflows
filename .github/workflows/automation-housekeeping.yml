@@ -87,6 +87,7 @@ jobs:
         # if: ${{ steps.hasBranchProtection.outcome == 'failure' }}
         run: |
           echo '{
+            "required_pull_request_reviews": null,
             "required_status_checks": {
               "strict": true,
               "contexts": [
@@ -99,7 +100,8 @@ jobs:
                 }
               ]
             },
-            "enforce_admins": true
+            "enforce_admins": true,
+            "restrictions": null
           }' > tmp.json
 
           gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input tmp.json
