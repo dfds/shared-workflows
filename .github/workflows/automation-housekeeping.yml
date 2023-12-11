@@ -99,7 +99,7 @@ jobs:
                 }
               ]
             },
-            "enforce_admins": true,
+            "enforce_admins": true
           }' > tmp.json
 
           gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input tmp.json
