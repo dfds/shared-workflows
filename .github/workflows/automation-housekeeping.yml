@@ -18,6 +18,11 @@ on:
         required: false
         default: false
         type: boolean
+      status_checks:
+        description: 'Enable mandatory status checks on PRs'
+        required: false
+        default: false
+        type: boolean
 
 env:
   GH_TOKEN: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
@@ -38,30 +43,94 @@ jobs:
   branch-protection:
     if: inputs.branch_protection == true
     runs-on: ubuntu-latest
+    concurrency:
+      group: queue
+      cancel-in-progress: false
     steps:
       - name: Checkout Repository
         uses: actions/checkout@master
         with:
           fetch-depth: 0
       - name: Get current branch protection on default branch
-        id: hasBranchProtection
         continue-on-error: true
         run: |
-          gh api repos/{owner}/{repo}/branches/{branch}/protection
-      # Only create branch protection if it doesn't exist, do not modify current settings
-      - name: Enable branch protection on default branch
-        if: ${{ steps.hasBranchProtection.outcome == 'failure' }}
-        run: |
-          echo '{
-            "required_pull_request_reviews": {
-              "dismiss_stale_reviews": true,
-              "require_code_owner_reviews": false,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1
-            },
-            "enforce_admins": true,
-            "required_status_checks": null,
-            "restrictions": null
-          }' > tmp.json
+          # Fetch the current branch protection rules
+          gh api repos/{owner}/{repo}/branches/{branch}/protection | \
+            jq '{
+              required_pull_request_reviews: .required_pull_request_reviews | del(.url),
+              enforce_admins: .enforce_admins.enabled,
+              required_status_checks: .required_status_checks | del(.url, .contexts, .contexts_url),
+              restrictions: .restrictions
+            }' > current_protection.json
 
-          gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input tmp.json
+          # Copy the current protection rules to a working file
+          cat current_protection.json > desired_protection.json
+      - name: Enable branch protection on default branch
+        run: |
+          # Add the desired PR review rules
+          w=$(jq '.required_pull_request_reviews |= {
+            "dismiss_stale_reviews": true,
+            "require_code_owner_reviews": false,
+            "require_last_push_approval": true,
+            "required_approving_review_count": 1
+          }' < desired_protection.json)
+
+          echo $w > desired_protection.json
+
+          # Add the 'do not bypass' rule
+          w=$(jq '.enforce_admins |= true' < desired_protection.json)
+
+          echo $w > desired_protection.json
+
+          gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input desired_protection.json
+  status-checks:
+    if: inputs.status_checks == true
+    runs-on: ubuntu-latest
+    concurrency:
+      group: queue
+      cancel-in-progress: false
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0
+      - name: Get current branch protection on default branch
+        continue-on-error: true
+        run: |
+          # Fetch the current branch protection rules
+          gh api repos/{owner}/{repo}/branches/{branch}/protection | \
+            jq '{
+              required_pull_request_reviews: .required_pull_request_reviews | del(.url),
+              enforce_admins: .enforce_admins.enabled,
+              required_status_checks: .required_status_checks | del(.url, .contexts, .contexts_url),
+              restrictions: .restrictions
+            }' > current_protection.json
+
+          # Copy the current protection rules to a working file
+          cat current_protection.json > desired_protection.json
+      - name: Enable mandatory status checks on PR's
+        run: |
+          # Add the strict field, if it does not exist
+          w=$(jq '.required_status_checks |= . + {
+            "strict": true
+          }' < desired_protection.json)
+
+          echo $w > desired_protection.json
+
+          # Check if the on-hold status check already exists, apply if not
+          if [[ $(jq 'select(.required_status_checks.checks[]?.context == "checking-labels")' < desired_protection.json) == "" ]]; then
+            # Appends the new status check, works both if the array is null or not
+            w=$(jq '.required_status_checks.checks[.required_status_checks.checks | length] |= . + {
+              "context": "checking-labels",
+              "app_id": 15368
+            }' < desired_protection.json)
+
+            echo $w > desired_protection.json
+          fi
+
+          # Add the 'do not bypass' rule
+          w=$(jq '.enforce_admins |= true' < desired_protection.json)
+
+          echo $w > desired_protection.json
+
+          gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input desired_protection.json
