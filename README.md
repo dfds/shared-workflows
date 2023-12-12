@@ -135,6 +135,8 @@ jobs:
       squash_merge: true
       # Optional, Enable branch protection on default branch
       branch_protection: true
+      # Optional, Enable mandatory status checks on PR's
+      status_checks: true
 ```
 
 ### Multi architecture docker build
