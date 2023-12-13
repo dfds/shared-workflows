@@ -136,7 +136,7 @@ jobs:
       squash_merge: true
       # Optional, Enable branch protection on default branch
       branch_protection: true
-      # Optional, Enable mandatory 'checking-labels' status check on PRs
+      # Optional, Enable mandatory checking-labels status check on PRs
       status_checks: true
 ```
 

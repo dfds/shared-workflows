@@ -19,7 +19,7 @@ on:
         default: false
         type: boolean
       status_checks:
-        description: 'Enable mandatory 'checking-labels' status check on PRs'
+        description: 'Enable mandatory checking-labels status check on PRs'
         required: false
         default: false
         type: boolean
@@ -108,7 +108,7 @@ jobs:
 
           # Copy the current protection rules to a working file
           cat current_protection.json > desired_protection.json
-      - name: Enable mandatory 'checking-labels' status check on PRs
+      - name: Enable mandatory checking-labels status check on PRs
         run: |
           # Add the strict field, if it does not exist
           w=$(jq '.required_status_checks |= . + {
