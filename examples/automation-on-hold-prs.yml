@@ -1,0 +1,11 @@
+name: Block on-hold PRs
+description: Status check that fails if a PR is on-hold, works in conjunction with status_checks [housekeeping](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#housekeeping)
+
+on:
+  pull_request:
+    branches: [ master, main ]
+    types: [ opened, labeled, unlabeled ]
+
+jobs:
+  checking-labels:
+    uses: dfds/shared-workflows/.github/workflows/automation-on-hold-prs.yml@master

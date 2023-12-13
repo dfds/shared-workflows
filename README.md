@@ -10,6 +10,7 @@ Shared workflows and actions:
 		- [Enforce PR labels](#enforce-pr-labels)
 		- [Housekeeping](#housekeeping)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
+		- [Block on-hold PRs](#block-on-hold-prs)
 		- [Add comment from PR template on Renovate pull requests](#add-comment-from-pr-template-on-renovate-pull-requests)
 	- actions
 		- [Slack Notifier](#slack-notifier)
@@ -135,7 +136,7 @@ jobs:
       squash_merge: true
       # Optional, Enable branch protection on default branch
       branch_protection: true
-      # Optional, Enable mandatory status checks on PR's
+      # Optional, Enable mandatory 'checking-labels' status check on PRs
       status_checks: true
 ```
 
@@ -181,6 +182,28 @@ jobs:
 
       # Optional, the path to the Dockerfile you wish to build. Defaults to Dockerfile at the repository root.
       docker-dockerfile-path: "./path/to/Dockerfile"
+```
+
+### Block on-hold PRs
+
+_This is a workflow_
+
+Status check that fails if a PR is on-hold, works in conjunction with status_checks [housekeeping](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#housekeeping)
+
+How to invoke this workflow:
+
+```yaml
+name: Block on-hold PRs
+
+on:
+  pull_request:
+    branches: [ master, main ]
+    types: [ opened, labeled, unlabeled ]
+
+jobs:
+  checking-labels:
+    uses: dfds/shared-workflows/.github/workflows/automation-on-hold-prs.yml@master
+
 ```
 
 ### Add comment from PR template on Renovate pull requests

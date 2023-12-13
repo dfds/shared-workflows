@@ -1,0 +1,13 @@
+name: Status check that fails if a PR is on-hold
+
+on:
+  workflow_call:
+
+jobs:
+  checking-labels:
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'on-hold') }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: PR has been put on hold
+      run: |
+        exit 1
