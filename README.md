@@ -188,7 +188,7 @@ jobs:
 
 _This is a workflow_
 
-Status check that fails if a PR is on-hold, works in conjunction with status_checks [housekeeping](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#housekeeping)
+Status check that fails if a PR is on-hold, works in conjunction with status_checks [housekeeping](https://github.com/dfds/shared-workflows#housekeeping)
 
 How to invoke this workflow:
 
