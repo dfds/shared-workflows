@@ -118,10 +118,10 @@ jobs:
           echo $w > desired_protection.json
 
           # Check if the on-hold status check already exists, apply if not
-          if [[ $(jq 'select(.required_status_checks.checks[]?.context == "checking-labels / checking-labels")' < desired_protection.json) == "" ]]; then
+          if [[ $(jq 'select(.required_status_checks.checks[]?.context == "shared / checking-labels")' < desired_protection.json) == "" ]]; then
             # Appends the new status check, works both if the array is null or not
             w=$(jq '.required_status_checks.checks[.required_status_checks.checks | length] |= . + {
-              "context": "checking-labels / checking-labels",
+              "context": "shared / checking-labels",
               "app_id": 15368
             }' < desired_protection.json)
 
