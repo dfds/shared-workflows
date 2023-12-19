@@ -30,7 +30,7 @@ Shared workflows and actions:
 
 _This is a workflow_
 
-Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#enforce-pr-labels).
+Creates a Github Release on push to master. Automatically tags the release and create release notes from git log. Change the semantic versioning by applying labels, **release:patch**, **release:minor**, **release:major**. Works best in conjuction with [Enforce PR labels](https://github.com/dfds/shared-workflows#enforce-pr-labels).
 
 [Marketplace](https://github.com/marketplace/actions/tag-release-on-push-action)
 
@@ -91,7 +91,7 @@ jobs:
 
 _This is a workflow_
 
-Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#auto-release).
+Enforce assigning labels before merging PR's. Useful for governing the use of semantic versioning labels for [Auto release](https://github.com/dfds/shared-workflows#auto-release).
 
 [Marketplace](https://github.com/marketplace/actions/enforce-pr-labels)
 
@@ -188,7 +188,7 @@ jobs:
 
 _This is a workflow_
 
-Status check that fails if a PR is on-hold, works in conjunction with status_checks [housekeeping](https://github.com/dfds/shared-workflows/tree/master/workflows/automation#housekeeping)
+Status check that fails if a PR is on-hold, works in conjunction with status_checks [housekeeping](https://github.com/dfds/shared-workflows#housekeeping)
 
 How to invoke this workflow:
 
