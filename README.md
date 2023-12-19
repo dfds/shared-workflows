@@ -201,7 +201,7 @@ on:
     types: [ opened, labeled, unlabeled ]
 
 jobs:
-  checking-labels:
+  shared:
     uses: dfds/shared-workflows/.github/workflows/automation-on-hold-prs.yml@master
 
 ```
