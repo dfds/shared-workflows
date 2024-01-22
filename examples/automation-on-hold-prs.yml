@@ -4,7 +4,7 @@ description: Status check that fails if a PR is on-hold, works in conjunction wi
 on:
   pull_request:
     branches: [ master, main ]
-    types: [ opened, labeled, unlabeled ]
+    types: [ opened, labeled, unlabeled, synchronize ]
 
 jobs:
   shared:
