@@ -108,29 +108,32 @@ jobs:
 
           # Copy the current protection rules to a working file
           cat current_protection.json > desired_protection.json
-      # - name: Enable mandatory checking-labels status check on PRs
-      #   run: |
-      #     # Add the strict field, if it does not exist
-      #     w=$(jq '.required_status_checks |= . + {
-      #       "strict": true
-      #     }' < desired_protection.json)
+      - name: Enable mandatory checking-labels status check on PRs
+        run: |
+          # Add the strict field, if it does not exist
+          w=$(jq '.required_status_checks |= . + {
+            "strict": true
+          }' < desired_protection.json)
 
-      #     echo $w > desired_protection.json
+          echo $w > desired_protection.json
+      - name: Enable on-hold status check
+        run: |
+          # Check if the on-hold status check already exists, apply if not
+          if [[ $(jq 'select(.required_status_checks.checks[]?.context == "shared / checking-labels")' < desired_protection.json) == "" ]]; then
+            # Appends the new status check, works both if the array is null or not
+            w=$(jq '.required_status_checks.checks[.required_status_checks.checks | length] |= . + {
+              "context": "shared / checking-labels",
+              "app_id": 15368
+            }' < desired_protection.json)
 
-      #     # Check if the on-hold status check already exists, apply if not
-      #     if [[ $(jq 'select(.required_status_checks.checks[]?.context == "shared / checking-labels")' < desired_protection.json) == "" ]]; then
-      #       # Appends the new status check, works both if the array is null or not
-      #       w=$(jq '.required_status_checks.checks[.required_status_checks.checks | length] |= . + {
-      #         "context": "shared / checking-labels",
-      #         "app_id": 15368
-      #       }' < desired_protection.json)
+            echo $w > desired_protection.json
+          fi
+      - name: Add the 'do not bypass' rule
+        run: |
+          # Add the 'do not bypass' rule
+          w=$(jq '.enforce_admins |= true' < desired_protection.json)
 
-      #       echo $w > desired_protection.json
-      #     fi
-
-      #     # Add the 'do not bypass' rule
-      #     w=$(jq '.enforce_admins |= true' < desired_protection.json)
-
-      #     echo $w > desired_protection.json
-
-      #     gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input desired_protection.json
+          echo $w > desired_protection.json
+      - name: Apply desired protection rules
+        run: |
+          gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input desired_protection.json
