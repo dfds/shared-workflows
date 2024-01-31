@@ -136,4 +136,6 @@ jobs:
           echo $w > desired_protection.json
       - name: Apply desired protection rules
         run: |
+          cat desired_protection.json
+          
           gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input desired_protection.json
