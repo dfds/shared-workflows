@@ -1,4 +1,4 @@
-[![Build README](https://github.com/dfds/shared-workflows/actions/workflows/build-readme.yml/badge.svg)](https://github.com/dfds/shared-workflows/actions/workflows/build-readme.yml)
+[![Build README](https://github.com/dfds/shared-workflows/actions/workflows/build-readme.yml/badge.svg?branch=master)](https://github.com/dfds/shared-workflows/actions/workflows/build-readme.yml)
 
 # Shared workflows and actions
 
