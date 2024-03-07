@@ -116,7 +116,8 @@ jobs:
           }' < desired_protection.json)
 
           echo $w > desired_protection.json
-
+      - name: Enable on-hold status check
+        run: |
           # Check if the on-hold status check already exists, apply if not
           if [[ $(jq 'select(.required_status_checks.checks[]?.context == "shared / checking-labels")' < desired_protection.json) == "" ]]; then
             # Appends the new status check, works both if the array is null or not
@@ -127,10 +128,12 @@ jobs:
 
             echo $w > desired_protection.json
           fi
-
+      - name: Add the 'do not bypass' rule
+        run: |
           # Add the 'do not bypass' rule
           w=$(jq '.enforce_admins |= true' < desired_protection.json)
 
           echo $w > desired_protection.json
-
+      - name: Apply desired protection rules
+        run: |
           gh api --method PUT repos/{owner}/{repo}/branches/{branch}/protection --input desired_protection.json
