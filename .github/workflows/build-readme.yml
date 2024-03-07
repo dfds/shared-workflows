@@ -5,6 +5,8 @@ on:
     branches: [ "master", "main" ]
     paths:
       - 'examples/**'
+      - 'headline.md'
+      - 'update-readme.py'
 
 jobs:
   build:
