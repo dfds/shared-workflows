@@ -1,0 +1,26 @@
+name: Dispatch to another repo
+
+on:
+  workflow_call:
+    inputs:
+      target-repository:
+        required: true
+        type: string
+      data:
+        required: true
+        type: string
+    secrets:
+      workflow-dispatch-auth-token:
+        required: true
+
+
+jobs:
+  dispatch-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: dispatch-to-${{ inputs.target-repository }}
+        run: |
+          curl -X POST https://api.github.com/repos/dfds/${{ inputs.target-repository }}/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.workflow-dispatch-auth-token }} \
+          --data ${{ inputs.data }}
