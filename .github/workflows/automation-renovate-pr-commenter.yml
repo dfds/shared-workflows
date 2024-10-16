@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: PR comment with file
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         with:
           filePath: ${{ inputs.pr-template-filepath }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
