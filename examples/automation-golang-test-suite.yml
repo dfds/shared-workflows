@@ -1,0 +1,10 @@
+name: Golang test suite
+description: Status check that fails if a PR with Golang code fails its test suite.
+
+on:
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-golang-test-suite.yml@master

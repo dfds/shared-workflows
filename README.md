@@ -8,6 +8,7 @@ Shared workflows and actions:
 		- [Auto release](#auto-release)
 		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
 		- [Enforce PR labels](#enforce-pr-labels)
+		- [Golang test suite](#golang-test-suite)
 		- [Housekeeping](#housekeeping)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
 		- [Block on-hold PRs](#block-on-hold-prs)
@@ -108,6 +109,27 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@master
+```
+
+### Golang test suite
+
+_This is a workflow_
+
+Status check that fails if a PR with Golang code fails its test suite.
+
+How to invoke this workflow:
+
+```yaml
+name: Golang test suite
+
+on:
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-golang-test-suite.yml@master
+
 ```
 
 ### Housekeeping
