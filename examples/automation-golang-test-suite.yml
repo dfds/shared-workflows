@@ -4,6 +4,10 @@ description: Status check that fails if a PR with Golang code fails its test sui
 on:
   pull_request:
     branches: [ master, main ]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
 
 jobs:
   shared:
