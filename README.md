@@ -125,6 +125,10 @@ name: Golang test suite
 on:
   pull_request:
     branches: [ master, main ]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
 
 jobs:
   shared:
