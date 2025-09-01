@@ -19,7 +19,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: azure/setup-helm@v4.3.0
+    - uses: azure/setup-helm@v4.3.1
       with:
         version: 'latest'
     - name: Configure aws credentials
