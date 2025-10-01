@@ -23,7 +23,7 @@ runs:
       with:
         version: 'latest'
     - name: Configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v5
       with:
         role-to-assume: ${{ inputs.role_arn }}
         role-session-name: gh-helm-repo-update
