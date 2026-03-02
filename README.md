@@ -21,8 +21,6 @@ Shared workflows and actions:
 - [Security](#security)
 	- workflows
 		- [Gitleaks](#gitleaks)
-		- [Run tfsec on pull requests](#run-tfsec-on-pull-requests)
-		- [Run tfsec and upload](#run-tfsec-and-upload)
 		- [Run Trivy IAC with Quality GAte](#run-trivy-iac-with-quality-gate)
 
 ## Automation
@@ -338,50 +336,6 @@ jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
     secrets: inherit
-```
-
-### Run tfsec on pull requests
-
-_This is a workflow_
-
-Add comments to pull requests where tfsec checks have failed.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-pr-commenter)
-
-How to invoke this workflow:
-
-```yaml
-name: Run tfsec on pull requests
-
-on:
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-tfsec-pr-commenter.yml@master
-```
-
-### Run tfsec and upload
-
-_This is a workflow_
-
-This Github Action will run the tfsec sarif check then add the report to the repo for upload.
-
-[Marketplace](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload)
-
-How to invoke this workflow:
-
-```yaml
-name: Run tfsec and upload
-
-on:
-  push:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-tfsec-upload.yml@master
 ```
 
 ### Run Trivy IAC with Quality GAte
