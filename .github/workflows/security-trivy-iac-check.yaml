@@ -11,14 +11,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run Trivy vulnerability scanner in IaC mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'config'
-          hide-progress: false
-          format: 'sarif'
-          output: 'trivy-iac-results.sarif'
-          exit-code: '0'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-          timeout: '30m'
+      #- name: Run Trivy vulnerability scanner in IaC mode
+      #  uses: aquasecurity/trivy-action@v0.69.2 # This is the version with the fix for the hackerbot-claw incident
+      #  with:
+      #    scan-type: 'config'
+      #    hide-progress: false
+      #    format: 'sarif'
+      #    output: 'trivy-iac-results.sarif'
+      #    exit-code: '0'
+      #    ignore-unfixed: true
+      #    severity: 'CRITICAL,HIGH'
+      #    timeout: '30m'
