@@ -3,22 +3,25 @@
 A repository for shared github workflows and actions, best practice for new and existing repositories. We welcome contributions. See [Contributing](docs/CONTRIBUTING.md) to get started.
 
 Shared workflows and actions:
-- [Shared workflows and actions](#shared-workflows-and-actions)
-  - [Automation](#automation)
-    - [Auto release](#auto-release)
-    - [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
-    - [Enforce PR labels](#enforce-pr-labels)
-    - [Golang test suite](#golang-test-suite)
-    - [Housekeeping](#housekeeping)
-    - [Multi architecture docker build](#multi-architecture-docker-build)
-    - [Block on-hold PRs](#block-on-hold-prs)
-    - [Add comment from PR template on Renovate pull requests](#add-comment-from-pr-template-on-renovate-pull-requests)
-    - [Slack Notifier](#slack-notifier)
-  - [Compliance](#compliance)
-    - [Checkov Github Actions Step](#checkov-github-actions-step)
-  - [Security](#security)
-    - [Gitleaks](#gitleaks)
-    - [Run Trivy IAC with Quality GAte](#run-trivy-iac-with-quality-gate)
+- [Automation](#automation)
+	- workflows
+		- [Auto release](#auto-release)
+		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
+		- [Enforce PR labels](#enforce-pr-labels)
+		- [Golang test suite](#golang-test-suite)
+		- [Housekeeping](#housekeeping)
+		- [Multi architecture docker build](#multi-architecture-docker-build)
+		- [Block on-hold PRs](#block-on-hold-prs)
+		- [Add comment from PR template on Renovate pull requests](#add-comment-from-pr-template-on-renovate-pull-requests)
+	- actions
+		- [Slack Notifier](#slack-notifier)
+- [Compliance](#compliance)
+	- actions
+		- [Checkov Github Actions Step](#checkov-github-actions-step)
+- [Security](#security)
+	- workflows
+		- [Gitleaks](#gitleaks)
+		- [Run Trivy IAC with Quality GAte](#run-trivy-iac-with-quality-gate)
 
 ## Automation
 
@@ -187,10 +190,10 @@ jobs:
 
       # Optional, path to the test script to run inside the container
       test-script-path: ./app/test.py
-
+      
       # Optional, the command to run the test script inside the container
       test-script-cmd: "python test.py"
-
+      
       # Optional, the path to the readme file to use for the docker image
       # It is recommended that if you do not have a specific file for the docker image,
       # that you use the same readme as the repository
