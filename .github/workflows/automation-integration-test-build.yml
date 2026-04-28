@@ -13,7 +13,7 @@ on:
         type: string
         default: ''
       ref:
-        description: 'Git ref to checkout (defaults to calling ref)'
+        description: 'Git ref to checkout. Accepts branch names (master, feature/foo), tags (v1.0.0), full refs (refs/heads/master, refs/tags/v1.0.0), or commit SHAs. Defaults to calling ref.'
         required: false
         type: string
         default: ''
