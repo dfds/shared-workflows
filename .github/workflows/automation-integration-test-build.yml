@@ -44,7 +44,7 @@ jobs:
         run: go test -c -v -vet=off -o /tmp/test.bin
 
       - name: Upload test binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.artifact-name }}
           path: /tmp/test.bin
