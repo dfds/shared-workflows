@@ -10,6 +10,7 @@ Shared workflows and actions:
 		- [Enforce PR labels](#enforce-pr-labels)
 		- [Golang test suite](#golang-test-suite)
 		- [Housekeeping](#housekeeping)
+		- [Integration test build](#integration-test-build)
 		- [Multi architecture docker build](#multi-architecture-docker-build)
 		- [Block on-hold PRs](#block-on-hold-prs)
 		- [Add comment from PR template on Renovate pull requests](#add-comment-from-pr-template-on-renovate-pull-requests)
@@ -160,6 +161,32 @@ jobs:
       branch_protection: true
       # Optional, Enable mandatory checking-labels status check on PRs
       status_checks: true
+```
+
+### Integration test build
+
+_This is a workflow_
+
+Builds a Go integration test binary and uploads it as an artifact. Designed for infrastructure integration tests that are compiled once and run against multiple environments.
+
+How to invoke this workflow:
+
+```yaml
+name: Integration test build
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-test:
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@master
+    with:
+      test-source-path: test/integration/suite
+      repository: dfds/infrastructure-modules
+      ref: master
+      artifact-name: test-binary
+
 ```
 
 ### Multi architecture docker build
