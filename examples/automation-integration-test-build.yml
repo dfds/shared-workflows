@@ -9,7 +9,7 @@ jobs:
   build-test:
     uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@master
     with:
-      test-source-path: test/integration/suite #Path to the Go test suite directory
-      repository: dfds/infrastructure-modules #Repository to checkout (optional, defaults to calling repo)
-      ref: master #Git ref to checkout (optional, defaults to calling ref)
-      artifact-name: test-binary #Name for the uploaded artifact (optional, defaults to integration-test-binary)
+      test-source-path: test/integration/suite
+      repository: dfds/infrastructure-modules
+      ref: master
+      artifact-name: test-binary
