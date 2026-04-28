@@ -1,0 +1,15 @@
+name: Integration test build
+description: Builds a Go integration test binary and uploads it as an artifact. Designed for infrastructure integration tests that are compiled once and run against multiple environments.
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-test:
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@master
+    with:
+      test-source-path: test/integration/suite
+      repository: dfds/infrastructure-modules
+      ref: master
+      artifact-name: test-binary
