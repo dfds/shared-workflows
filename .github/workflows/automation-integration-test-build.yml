@@ -1,0 +1,50 @@
+name: Integration test build
+
+on:
+  workflow_call:
+    inputs:
+      test-source-path:
+        description: 'Path to the Go test suite directory'
+        required: true
+        type: string
+      repository:
+        description: 'Repository to checkout (defaults to calling repo)'
+        required: false
+        type: string
+        default: ''
+      ref:
+        description: 'Git ref to checkout (defaults to calling ref)'
+        required: false
+        type: string
+        default: ''
+      artifact-name:
+        description: 'Name for the uploaded test binary artifact'
+        required: false
+        type: string
+        default: 'integration-test-binary'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ inputs.repository || github.repository }}
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: ${{ inputs.test-source-path }}/go.mod
+          cache-dependency-path: ${{ inputs.test-source-path }}/go.sum
+
+      - name: Build test binary
+        working-directory: ${{ inputs.test-source-path }}
+        run: go test -c -v -vet=off -o /tmp/test.bin
+
+      - name: Upload test binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: /tmp/test.bin
