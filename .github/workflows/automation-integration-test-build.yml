@@ -22,10 +22,21 @@ on:
         required: false
         type: string
         default: 'integration-test-binary'
+      runner:
+        description: 'Runner label to execute the build on. Defaults to GitHub-hosted ubuntu-latest; pass a self-hosted label (e.g. dfds-runners) to avoid GHA minutes billing.'
+        required: false
+        type: string
+        default: 'ubuntu-latest'
+      container:
+        description: 'Optional container image to run the build in. Useful when the runner does not have Go pre-installed (e.g. dfdsdk/prime-pipeline). When set, actions/setup-go is skipped.'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
+    container: ${{ inputs.container }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -34,6 +45,7 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
 
       - name: Setup Go
+        if: inputs.container == ''
         uses: actions/setup-go@v6
         with:
           go-version-file: ${{ inputs.test-source-path }}/go.mod
