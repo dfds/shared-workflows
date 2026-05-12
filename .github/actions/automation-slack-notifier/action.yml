@@ -1,7 +1,7 @@
 name: Slack Notifier
 description: Alerts to a slack channel
 
-input:
+inputs:
   slack_webhook:
     description: 'Slack webhook as a secret'
     required: true
