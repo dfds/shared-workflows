@@ -1,15 +1,24 @@
 name: Install Terragrunt and OpenTofu
 description: Installs Terragrunt and OpenTofu
 
-input:
+inputs:
   token:
     description: 'GitHub token as a secret'
     required: true
+
+outputs:
+  tg_version:
+    description: 'Installed Terragrunt version'
+    value: ${{ steps.install.outputs.tg_version }}
+  tofu_version:
+    description: 'Installed OpenTofu version'
+    value: ${{ steps.install.outputs.tofu_version }}
 
 runs:
   using: "composite"
   steps:
     - name: Install Terragrunt and OpenTofu
+      id: install
       uses: gruntwork-io/terragrunt-action@v3
       with:
         github_token: ${{ inputs.token }}
