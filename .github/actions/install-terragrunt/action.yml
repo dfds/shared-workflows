@@ -6,14 +6,6 @@ inputs:
     description: 'GitHub token as a secret'
     required: true
 
-outputs:
-  tg_version:
-    description: 'Installed Terragrunt version'
-    value: ${{ steps.install.outputs.tg_version }}
-  tofu_version:
-    description: 'Installed OpenTofu version'
-    value: ${{ steps.install.outputs.tofu_version }}
-
 runs:
   using: "composite"
   steps:
