@@ -1,0 +1,15 @@
+name: Install Terragrunt and OpenTofu
+
+on:
+  workflow_call:
+
+jobs:
+  install-terragrunt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Terragrunt and OpenTofu
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tg_version: '1.0.4'
+          tofu_version: '1.11.7'
