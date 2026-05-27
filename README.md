@@ -7,6 +7,7 @@ Shared workflows and actions:
 	- workflows
 		- [Auto release](#auto-release)
 		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
+		- [ECR cache warm check](#ecr-cache-warm-check)
 		- [Enforce PR labels](#enforce-pr-labels)
 		- [Golang test suite](#golang-test-suite)
 		- [Housekeeping](#housekeeping)
@@ -84,6 +85,34 @@ jobs:
       arguments: PACKAGE_NAME=${{ matrix.lambda-name }} #The arguments to be passed to make
     secrets:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
+
+```
+
+### ECR cache warm check
+
+_This is a workflow_
+
+Pulls every ECR image referenced in the calling repo's GitHub Actions workflows so the pull-through cache is materialized before self-hosted runners (with their short kubelet image-pull timeouts) try to pull them. Trigger on PRs that modify workflows to catch container tag bumps before merge.
+
+How to invoke this workflow:
+
+```yaml
+name: ECR cache warm check
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+
+jobs:
+  warm-cache:
+    uses: dfds/shared-workflows/.github/workflows/automation-ecr-warm-cache.yml@master
+    with:
+      role-to-assume: arn:aws:iam::123456789012:role/github-actions-ecr-warm-cache
+      aws-region: eu-west-1
+    permissions:
+      id-token: write
+      contents: read
 
 ```
 
