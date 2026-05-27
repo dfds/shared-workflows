@@ -1,0 +1,89 @@
+name: ECR cache warm
+
+on:
+  workflow_call:
+    inputs:
+      role-to-assume:
+        description: 'AWS IAM role ARN to assume via OIDC. Needs ecr:GetAuthorizationToken plus pull-through cache permissions (ecr:BatchImportUpstreamImage, ecr:CreateRepository, ecr:BatchGetImage, ecr:BatchCheckLayerAvailability, ecr:GetDownloadUrlForLayer).'
+        required: true
+        type: string
+      aws-region:
+        description: 'AWS region of the ECR registry. Defaults to eu-west-1.'
+        required: false
+        type: string
+        default: 'eu-west-1'
+      workflow-glob:
+        description: 'Glob of workflow files to scan for ECR image references. Defaults to all GitHub Actions workflows in the calling repo.'
+        required: false
+        type: string
+        default: '.github/workflows/*.yml .github/workflows/*.yaml'
+
+jobs:
+  warm:
+    name: Warm ECR pull-through cache
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ inputs.role-to-assume }}
+          role-session-name: ecr-warm-cache
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Extract ECR image references
+        id: extract
+        run: |
+          set -euo pipefail
+          # Scan workflow files for <account>.dkr.ecr.<region>.amazonaws.com/<path>:<tag>
+          IMAGES=$(grep -hoE '[0-9]{12}\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9./_-]+:[a-zA-Z0-9._-]+' ${{ inputs.workflow-glob }} 2>/dev/null | sort -u || true)
+          if [ -z "$IMAGES" ]; then
+            echo "No ECR image references found in workflows — nothing to warm."
+            echo "images=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Found the following ECR image references:"
+          echo "$IMAGES"
+          # Multiline output for downstream steps
+          {
+            echo "images<<EOF"
+            echo "$IMAGES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Log in to ECR and pull images
+        if: steps.extract.outputs.images != ''
+        env:
+          IMAGES: ${{ steps.extract.outputs.images }}
+        run: |
+          set -euo pipefail
+          # Log in once per unique registry (in case multiple accounts/regions appear)
+          REGISTRIES=$(echo "$IMAGES" | awk -F/ '{print $1}' | sort -u)
+          for REGISTRY in $REGISTRIES; do
+            REGION=$(echo "$REGISTRY" | awk -F. '{print $4}')
+            echo "Authenticating to $REGISTRY (region $REGION)"
+            aws ecr get-login-password --region "$REGION" | \
+              docker login --username AWS --password-stdin "$REGISTRY"
+          done
+          # Pull every unique image. A successful pull either confirms the
+          # image was already cached or triggers the pull-through cache to
+          # fetch it from upstream, making it available for self-hosted
+          # runners with short kubelet pull timeouts.
+          FAILED=0
+          while IFS= read -r IMAGE; do
+            [ -z "$IMAGE" ] && continue
+            echo "::group::Pulling $IMAGE"
+            if docker pull "$IMAGE"; then
+              echo "::endgroup::"
+            else
+              echo "::endgroup::"
+              echo "::error::Failed to pull $IMAGE — check upstream availability and pull-through cache configuration."
+              FAILED=1
+            fi
+          done <<< "$IMAGES"
+          exit $FAILED

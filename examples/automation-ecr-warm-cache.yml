@@ -1,0 +1,17 @@
+name: ECR cache warm check
+description: Pulls every ECR image referenced in the calling repo's GitHub Actions workflows so the pull-through cache is materialized before self-hosted runners (with their short kubelet image-pull timeouts) try to pull them. Trigger on PRs that modify workflows to catch container tag bumps before merge.
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+
+jobs:
+  warm-cache:
+    uses: dfds/shared-workflows/.github/workflows/automation-ecr-warm-cache.yml@master
+    with:
+      role-to-assume: arn:aws:iam::123456789012:role/github-actions-ecr-warm-cache
+      aws-region: eu-west-1
+    permissions:
+      id-token: write
+      contents: read
