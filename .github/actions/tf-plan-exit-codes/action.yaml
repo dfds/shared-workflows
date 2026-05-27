@@ -1,0 +1,54 @@
+name: 'Terragrunt plan with exit codes'
+description: 'Run Terragrunt plan and handle exit codes'
+inputs:
+  tg_dir:
+    description: 'The directory containing the Terragrunt configuration'
+    required: true
+  gh_token:
+    description: 'GitHub token for posting comments and avoiding rate limits'
+    required: true
+outputs:
+  tg_action_exit_code:
+    description: "Terragrunt action exit code"
+    value: ${{ steps.plan.outputs.tg_action_exit_code }}
+runs:
+  using: "composite"
+  steps:
+    - name: Install Terragrunt and OpenTofu
+      uses: gruntwork-io/terragrunt-action@v3
+      with:
+        github_token: ${{ inputs.gh_token }}
+
+    - name: Plan
+      id: plan
+      uses: gruntwork-io/terragrunt-action@v3
+      with:
+        tg_dir: ${{ inputs.tg_dir }}
+        tg_command: plan --provider-cache -detailed-exitcode -out ${{ github.workspace }}/${{ inputs.tg_dir }}.tfplan
+
+    # Needed because steps.show_plan.outputs.tg_action_output strips newlines
+    - name: Output plan to file
+      if: always() && steps.plan.outputs.tg_action_exit_code != '0'
+      id: output_to_file
+      run: terragrunt show -no-color ${{ github.workspace }}/${{ inputs.tg_dir }}.tfplan | tee ${{ github.workspace }}/plan_output.txt
+      shell: bash
+      working-directory: ${{ inputs.tg_dir }}
+
+    - name: Post plan comment
+      if: always() && steps.plan.outputs.tg_action_exit_code != '0'
+      uses: actions/github-script@v9
+      with:
+        github-token: ${{ inputs.gh_token }}
+        script: |
+          const fs = require('fs');
+          const planOutput = fs.readFileSync('${{ github.workspace }}/plan_output.txt', 'utf8');
+          const exitCode = '${{ steps.plan.outputs.tg_action_exit_code }}';
+          const header = exitCode === '2'
+            ? `👋 Plan has changes for ${{ inputs.tg_dir }}. Please review the plan output below for details:`
+            : `❌ Plan failed for ${{ inputs.tg_dir }}:`;
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `${header}\n\n\`\`\`\n${planOutput}\n\`\`\``
+          })
