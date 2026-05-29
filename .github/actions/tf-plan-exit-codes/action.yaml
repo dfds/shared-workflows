@@ -28,7 +28,7 @@ runs:
 
     # Needed because steps.show_plan.outputs.tg_action_output strips newlines
     - name: Output plan to file
-      if: always() && steps.plan.outputs.tg_action_exit_code != '0'
+      if: always() && steps.plan.outputs.tg_action_exit_code == '2'
       id: output_to_file
       run: terragrunt show -no-color ${{ github.workspace }}/${{ inputs.tg_dir }}.tfplan | tee ${{ github.workspace }}/plan_output.txt
       shell: bash
@@ -41,14 +41,43 @@ runs:
         github-token: ${{ inputs.gh_token }}
         script: |
           const fs = require('fs');
-          const planOutput = fs.readFileSync('${{ github.workspace }}/plan_output.txt', 'utf8');
           const exitCode = '${{ steps.plan.outputs.tg_action_exit_code }}';
-          const header = exitCode === '2'
-            ? `👋 Plan has changes for ${{ inputs.tg_dir }}. Please review the plan output below for details:`
-            : `❌ Plan failed for ${{ inputs.tg_dir }}:`;
+          const runUrl = `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+          let body;
+
+          if (exitCode === '2') {
+            const planOutput = fs.readFileSync('${{ github.workspace }}/plan_output.txt', 'utf8');
+            const header = `👋 Plan has changes for ${{ inputs.tg_dir }}. Please review the plan output below for details:`;
+            body = `${header}\n\n\`\`\`\n${planOutput}\n\`\`\``;
+          } else {
+            const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+              filter: 'latest',
+            });
+
+            const jobId = process.env.GITHUB_JOB;
+            const tgDir = '${{ inputs.tg_dir }}';
+            const currentJob = jobs.find((job) => {
+              if (!job?.name) {
+                return false;
+              }
+
+              return (
+                job.name === jobId ||
+                job.name.startsWith(`${jobId} (`) ||
+                job.name.includes(tgDir)
+              );
+            });
+
+            const failedJobUrl = currentJob?.html_url || runUrl;
+            body = `❌ Plan failed for ${{ inputs.tg_dir }}:\nPlease check this url:\n${failedJobUrl}`;
+          }
+
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `${header}\n\n\`\`\`\n${planOutput}\n\`\`\``
+            body
           })
