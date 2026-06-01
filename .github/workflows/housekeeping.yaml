@@ -1,0 +1,17 @@
+name: Housekeeping
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-housekeeping.yml@master
+    secrets: inherit
+    with:
+      delete_head_branch: true
+      squash_merge: true
+      branch_protection: true
+      status_checks: false
