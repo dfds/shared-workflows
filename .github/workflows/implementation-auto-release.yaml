@@ -12,8 +12,4 @@ on:
 
 jobs:
   auto-release:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: ./.github/workflows/automation-enforce-release-labels.yml
+      uses: ./.github/workflows/automation-auto-release.yml
