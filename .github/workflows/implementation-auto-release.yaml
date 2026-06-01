@@ -2,26 +2,14 @@ name: Auto release on merge (Implementation)
 
 on:
   push:
-    branches: ["master", "main"]
+    branches:
+      - master
     paths-ignore:
-      - ".github/**"
-      - ".trunk/**"
-      - "**/*.md"
       - ".gitignore"
-      - ".pre-commit-config.yaml"
-      - "LICENSE"
+      - "**/*.md"
+      - "docs/**"
       - "renovate.json"
-      - "test/**"
-      - "src/**"
-      - "mise.toml"
 
 jobs:
   auto-release:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: rymndhng/release-on-push-action@master
-        with:
-          bump_version_scheme: patch
-          tag_prefix: ""
+      uses: ./.github/workflows/automation-auto-release.yml
