@@ -1,4 +1,4 @@
-name: Auto release on merge (Implementation)
+name: Auto release on merge
 
 on:
   push:
@@ -21,7 +21,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: rymndhng/release-on-push-action@master
+      - uses: ./.github/actions/automation-auto-release.yaml
         with:
-          bump_version_scheme: patch
           tag_prefix: ""
