@@ -21,7 +21,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/automation-auto-release.yaml
+      - uses: ./.github/workflows/automation-auto-release.yaml
         with:
           tag_prefix: ""
