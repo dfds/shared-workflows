@@ -1,4 +1,4 @@
-name: Enforce PR labels (Implementation)
+name: Enforce PR labels
 
 on:
   pull_request:
@@ -8,7 +8,4 @@ jobs:
   enforce-label:
     runs-on: ubuntu-latest
     steps:
-    - uses: yogevbd/enforce-label-action@2.2.2
-      with:
-        REQUIRED_LABELS_ANY: "release:minor,release:major,release:patch,release:norelease,norelease"
-        REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['release:minor','release:major','release:patch','release:norelease','norelease']"
+    - uses: ./.github/actions/automation-enforce-release-labels.yml
