@@ -1,4 +1,4 @@
-name: Auto release on merge
+name: Auto release on merge (Implementation)
 
 on:
   push:
