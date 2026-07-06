@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       #- name: Run Trivy vulnerability scanner in IaC mode
       #  uses: aquasecurity/trivy-action@v0.69.2 # This is the version with the fix for the hackerbot-claw incident
