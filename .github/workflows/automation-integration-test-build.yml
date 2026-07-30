@@ -46,7 +46,7 @@ jobs:
 
       - name: Setup Go
         if: inputs.container == ''
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version-file: ${{ inputs.test-source-path }}/go.mod
           cache-dependency-path: ${{ inputs.test-source-path }}/go.sum
