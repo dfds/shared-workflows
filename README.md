@@ -7,6 +7,7 @@ Shared workflows and actions:
 	- workflows
 		- [Auto release](#auto-release)
 		- [Build lambda and upload to S3](#build-lambda-and-upload-to-s3)
+		- [EKS provision and integration test](#eks-provision-and-integration-test)
 		- [Enforce PR labels](#enforce-pr-labels)
 		- [Golang test suite](#golang-test-suite)
 		- [Housekeeping](#housekeeping)
@@ -84,6 +85,37 @@ jobs:
       arguments: PACKAGE_NAME=${{ matrix.lambda-name }} #The arguments to be passed to make
     secrets:
       role-to-assume: ${{ secrets.ROLE_TO_ASSUME }} #Repository secret with the AWS role to be assumed
+
+```
+
+### EKS provision and integration test
+
+_This is a workflow_
+
+Provisions an EKS cluster with terragrunt and runs the shared integration test binary against it. Collapses the per-environment eks-pipeline workflows (diffie, staging-hellman, standby) into one reusable workflow. Pass integration-atlantis-deploy false for standby-style clusters where Atlantis is not deployed. Requires the OP_GITHUB_TOKEN secret for 1Password secret loading.
+
+How to invoke this workflow:
+
+```yaml
+name: EKS provision and integration test
+
+on:
+  push:
+    branches: [master]
+
+concurrency: terragrunt-hydrogen
+
+jobs:
+  provision-and-test:
+    uses: dfds/shared-workflows/.github/workflows/automation-eks-provision-and-integration-test.yml@master
+    with:
+      cluster-name: diffie
+      account-dir: hydrogen-account
+      prime-role-arn: arn:aws:iam::441878985796:role/Prime
+      integration-dns-zone: diffie.hydrogen.dfds.cloud
+      integration-atlantis-deploy: false
+    secrets:
+      OP_GITHUB_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
 
 ```
 
