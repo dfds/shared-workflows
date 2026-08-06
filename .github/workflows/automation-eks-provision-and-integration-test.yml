@@ -1,0 +1,135 @@
+name: EKS provision and integration test
+
+on:
+  workflow_call:
+    inputs:
+      cluster-name:
+        description: 'Cluster name, e.g. diffie or staging-hellman. Drives the node-group/ASG waits, the kubeconfig path and the job name.'
+        required: true
+        type: string
+      account-dir:
+        description: 'Terragrunt account directory in the calling repo, e.g. hydrogen-account or staging-oxygen-account.'
+        required: true
+        type: string
+      prime-role-arn:
+        description: 'ARN of the Prime role to assume when running the node-group/ASG wait scripts.'
+        required: true
+        type: string
+      integration-dns-zone:
+        description: 'DNS zone passed to the integration tests as INTEGRATION_DNS_ZONE.'
+        required: true
+        type: string
+      integration-atlantis-deploy:
+        description: 'Whether Atlantis is deployed in this environment (INTEGRATION_ATLANTIS_DEPLOY). Set false for standby-style clusters where Atlantis is not deployed.'
+        required: false
+        type: boolean
+        default: true
+      test-source-path:
+        description: 'Path to the Go test suite directory in the test repository.'
+        required: false
+        type: string
+        default: test/integration/suite
+      test-repository:
+        description: 'Repository containing the integration test suite.'
+        required: false
+        type: string
+        default: dfds/infrastructure-modules
+      test-ref:
+        description: 'Git ref of the test repository to build the test binary from.'
+        required: false
+        type: string
+        default: master
+      runner:
+        description: 'Runner label to execute the jobs on.'
+        required: false
+        type: string
+        default: dfds-runners
+      container:
+        description: 'Container image used for both the build and the apply/test job.'
+        required: false
+        type: string
+        default: dfdsdk/prime-pipeline:2.2.6
+      aws-region:
+        description: 'AWS region. Also used as the region segment of the kubeconfig path.'
+        required: false
+        type: string
+        default: eu-west-1
+    secrets:
+      OP_GITHUB_TOKEN:
+        description: '1Password service account token used to load environment secrets.'
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build_test:
+    name: Build test binary from infrastructure-modules
+    uses: ./.github/workflows/automation-integration-test-build.yml
+    with:
+      test-source-path: ${{ inputs.test-source-path }}
+      repository: ${{ inputs.test-repository }}
+      ref: ${{ inputs.test-ref }}
+      artifact-name: test-bin
+      runner: ${{ inputs.runner }}
+      container: ${{ inputs.container }}
+
+  apply_and_test:
+    name: Provision ${{ inputs.cluster-name }} & run integration tests
+    runs-on: ${{ inputs.runner }}
+    container:
+      image: ${{ inputs.container }}
+    needs: build_test
+    env:
+      AWS_DEFAULT_REGION: ${{ inputs.aws-region }}
+      TF_IN_AUTOMATION: "true"
+    steps:
+      - name: Checkout calling repository
+        uses: actions/checkout@v7
+
+      - name: Load secrets
+        uses: 1password/load-secrets-action@v5
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
+          OP_ENV_FILE: ${{ inputs.account-dir }}/.1password
+
+      - name: Terragrunt apply
+        run: terragrunt apply --all --working-dir ./${{ inputs.account-dir }} --non-interactive -input=false -auto-approve --provider-cache
+
+      - name: Wait for managed node groups to become active
+        run: |
+            export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+                $(aws sts assume-role \
+                    --role-arn ${{ inputs.prime-role-arn }} \
+                    --role-session-name NgsWaitScriptSession \
+                    --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+                    --output text))
+            wait-for-ngs.sh ${{ inputs.cluster-name }}
+
+      - name: Wait for auto scaling groups' instances to be in service
+        run: |
+            export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+                $(aws sts assume-role \
+                    --role-arn ${{ inputs.prime-role-arn }} \
+                    --role-session-name AsgsWaitScriptSession \
+                    --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+                    --output text))
+            wait-for-asgs.sh ${{ inputs.cluster-name }}
+
+      - name: Download test binary
+        uses: actions/download-artifact@v8
+        with:
+          name: test-bin
+          path: /tmp
+
+      - name: Run integration tests
+        env:
+          INTEGRATION_DNS_ZONE: ${{ inputs.integration-dns-zone }}
+          INTEGRATION_ATLANTIS_DEPLOY: ${{ inputs.integration-atlantis-deploy }}
+        run: |
+          export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --working-dir ./${{ inputs.account-dir }}/${{ inputs.aws-region }}/k8s-${{ inputs.cluster-name }}/cluster)
+          chmod a+x /tmp/test.bin
+          /tmp/test.bin -test.v -test.parallel 30
