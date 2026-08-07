@@ -22,7 +22,6 @@ Shared workflows and actions:
 - [Security](#security)
 	- workflows
 		- [Gitleaks](#gitleaks)
-		- [Run Trivy IAC with Quality GAte](#run-trivy-iac-with-quality-gate)
 
 ## Automation
 
@@ -363,28 +362,4 @@ jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@master
     secrets: inherit
-```
-
-### Run Trivy IAC with Quality GAte
-
-_This is a workflow_
-
-This Github Action will run the trivy IAC check and block if High or Critical issues are found.
-
-[Marketplace](https://github.com/marketplace/actions/run-trivy-iac-check)
-
-How to invoke this workflow:
-
-```yaml
-name: Run Trivy IAC with Quality GAte
-
-on:
-  push:
-    branches: [ "master", "main" ]
-  pull_request:
-    branches: [ "master", "main" ]
-
-jobs:
-  shared:
-    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
 ```
