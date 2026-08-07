@@ -33,7 +33,7 @@ on:
         description: 'Container image used for both the build and the apply/test job.'
         required: false
         type: string
-        default: dfdsdk/prime-pipeline:2.2.6
+        default: dfdsdk/prime-pipeline:latest
       aws-region:
         description: 'AWS region. Also used as the region segment of the kubeconfig path.'
         required: false
