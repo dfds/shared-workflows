@@ -24,21 +24,6 @@ on:
         required: false
         type: boolean
         default: true
-      test-source-path:
-        description: 'Path to the Go test suite directory in the test repository.'
-        required: false
-        type: string
-        default: test/integration/suite
-      test-repository:
-        description: 'Repository containing the integration test suite.'
-        required: false
-        type: string
-        default: dfds/infrastructure-modules
-      test-ref:
-        description: 'Git ref of the test repository to build the test binary from.'
-        required: false
-        type: string
-        default: master
       runner:
         description: 'Runner label to execute the jobs on.'
         required: false
@@ -68,9 +53,9 @@ jobs:
     name: Build test binary from infrastructure-modules
     uses: ./.github/workflows/automation-integration-test-build.yml
     with:
-      test-source-path: ${{ inputs.test-source-path }}
-      repository: ${{ inputs.test-repository }}
-      ref: ${{ inputs.test-ref }}
+      test-source-path: test/integration/suite
+      repository: dfds/infrastructure-modules
+      ref: master
       artifact-name: test-bin
       runner: ${{ inputs.runner }}
       container: ${{ inputs.container }}
