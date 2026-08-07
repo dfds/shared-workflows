@@ -92,7 +92,7 @@ jobs:
 
 _This is a workflow_
 
-Provisions an EKS cluster with terragrunt and runs the shared integration test binary against it. Collapses the per-environment eks-pipeline workflows (diffie, staging-hellman, standby) into one reusable workflow. Pass integration-atlantis-deploy false for standby-style clusters where Atlantis is not deployed. Requires the OP_GITHUB_TOKEN secret for 1Password secret loading.
+Provisions an EKS cluster with terragrunt and runs the shared integration test binary against it. Collapses the per-environment eks-pipeline workflows into one reusable workflow. Pass integration-atlantis-deploy false for standby-style clusters where Atlantis is not deployed. Requires the OP_GITHUB_TOKEN secret for 1Password secret loading.
 
 How to invoke this workflow:
 
@@ -103,15 +103,13 @@ on:
   push:
     branches: [master]
 
-concurrency: terragrunt-hydrogen
-
 jobs:
   provision-and-test:
     uses: dfds/shared-workflows/.github/workflows/automation-eks-provision-and-integration-test.yml@master
     with:
       cluster-name: diffie
       account-dir: hydrogen-account
-      prime-role-arn: arn:aws:iam::441878985796:role/Prime
+      prime-role-arn: arn:aws:iam::<account-id>:role/Prime
       integration-dns-zone: diffie.hydrogen.dfds.cloud
       integration-atlantis-deploy: false
     secrets:
