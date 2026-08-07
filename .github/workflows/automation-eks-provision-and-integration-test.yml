@@ -73,18 +73,49 @@ jobs:
       - name: Checkout calling repository
         uses: actions/checkout@v7
 
+      # export-env: false keeps secrets out of the job-wide environment on a
+      # public repo + self-hosted runners. Each secret is scoped, via
+      # steps.op.outputs, to only the steps that need it. Note: this couples the
+      # workflow to the secret names in <account-dir>/.1password — adding a new
+      # secret there means adding it to the terragrunt step's env below too.
       - name: Load secrets
+        id: op
         uses: 1password/load-secrets-action@v5
         with:
-          export-env: true
+          export-env: false
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
           OP_ENV_FILE: ${{ inputs.account-dir }}/.1password
 
-      - name: Terragrunt apply
-        run: terragrunt apply --all --working-dir ./${{ inputs.account-dir }} --non-interactive -input=false -auto-approve --provider-cache
+      - name: Terragrunt apply and resolve kubeconfig
+        env:
+          ARM_CLIENT_ID: ${{ steps.op.outputs.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ steps.op.outputs.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ steps.op.outputs.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ steps.op.outputs.ARM_TENANT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ steps.op.outputs.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.op.outputs.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_atlantis_github_token: ${{ steps.op.outputs.TF_VAR_atlantis_github_token }}
+          TF_VAR_docker_hub_password: ${{ steps.op.outputs.TF_VAR_docker_hub_password }}
+          TF_VAR_docker_hub_username: ${{ steps.op.outputs.TF_VAR_docker_hub_username }}
+          TF_VAR_eks_addon_awsebscsidriver_kms_arn: ${{ steps.op.outputs.TF_VAR_eks_addon_awsebscsidriver_kms_arn }}
+          TF_VAR_falco_slack_alert_webhook_url: ${{ steps.op.outputs.TF_VAR_falco_slack_alert_webhook_url }}
+          TF_VAR_fluxcd_bootstrap_repo_owner_token: ${{ steps.op.outputs.TF_VAR_fluxcd_bootstrap_repo_owner_token }}
+          TF_VAR_onepassword_credentials_json: ${{ steps.op.outputs.TF_VAR_onepassword_credentials_json }}
+          TF_VAR_onepassword_token_for_atlantis: ${{ steps.op.outputs.TF_VAR_onepassword_token_for_atlantis }}
+          TF_VAR_onepassword_token_for_grafana: ${{ steps.op.outputs.TF_VAR_onepassword_token_for_grafana }}
+          TF_VAR_slack_webhook_url: ${{ steps.op.outputs.TF_VAR_slack_webhook_url }}
+        run: |
+          terragrunt apply --all --working-dir ./${{ inputs.account-dir }} --non-interactive -input=false -auto-approve --provider-cache
+          # Plain assignment (not `export ...=$(...)`) so a failed output resolution
+          # fails the step under `set -e` instead of silently writing an empty KUBECONFIG.
+          kubeconfig=$(terragrunt output --raw kubeconfig_path --working-dir ./${{ inputs.account-dir }}/${{ inputs.aws-region }}/k8s-${{ inputs.cluster-name }}/cluster)
+          echo "KUBECONFIG=$kubeconfig" >> "$GITHUB_ENV"
 
       - name: Wait for managed node groups to become active
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.op.outputs.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.op.outputs.AWS_SECRET_ACCESS_KEY }}
         run: |
             export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
                 $(aws sts assume-role \
@@ -95,6 +126,9 @@ jobs:
             wait-for-ngs.sh ${{ inputs.cluster-name }}
 
       - name: Wait for auto scaling groups' instances to be in service
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.op.outputs.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.op.outputs.AWS_SECRET_ACCESS_KEY }}
         run: |
             export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
                 $(aws sts assume-role \
@@ -115,6 +149,5 @@ jobs:
           INTEGRATION_DNS_ZONE: ${{ inputs.integration-dns-zone }}
           INTEGRATION_ATLANTIS_DEPLOY: ${{ inputs.integration-atlantis-deploy }}
         run: |
-          export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --working-dir ./${{ inputs.account-dir }}/${{ inputs.aws-region }}/k8s-${{ inputs.cluster-name }}/cluster)
           chmod a+x /tmp/test.bin
           /tmp/test.bin -test.v -test.parallel 30
