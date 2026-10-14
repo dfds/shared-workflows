@@ -130,7 +130,7 @@ jobs:
         with:
           context: .
           platforms: ${{ inputs.os-archs }}
-          push: true
+          push: ${{ needs.collect-metadata.outputs.tags != '' }}
           tags: ${{ needs.collect-metadata.outputs.tags }}
           labels: ${{ needs.collect-metadata.outputs.labels }}
           file: ${{ inputs.docker-dockerfile-path }}
