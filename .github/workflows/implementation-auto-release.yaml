@@ -10,6 +10,13 @@ on:
       - "docs/**"
       - "renovate.json"
 
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   auto-release:
-      uses: ./.github/workflows/automation-auto-release.yml
+    uses: ./.github/workflows/automation-auto-release.yml

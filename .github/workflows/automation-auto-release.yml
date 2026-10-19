@@ -23,8 +23,34 @@ jobs:
     outputs:
       semver: ${{ steps.auto-release-id.outputs.version }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_RELEASE || secrets.GITHUB_TOKEN }}
       - uses: rymndhng/release-on-push-action@v0.28.0
         id: auto-release-id
         with:
           bump_version_scheme: patch
           tag_prefix: ${{ inputs.tag_prefix }}
+      - name: Update version aliases
+        if: steps.auto-release-id.outputs.tag_name != ''
+        env:
+          RELEASE_TAG: ${{ steps.auto-release-id.outputs.tag_name }}
+          TAG_PREFIX: ${{ inputs.tag_prefix }}
+        run: |
+          if [[ "$RELEASE_TAG" != "$TAG_PREFIX"* ]]; then
+            echo "::error::Release tag '$RELEASE_TAG' does not start with the configured prefix '$TAG_PREFIX'"
+            exit 1
+          fi
+
+          version="${RELEASE_TAG#"$TAG_PREFIX"}"
+          if [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            major="${TAG_PREFIX}${BASH_REMATCH[1]}"
+            minor="${major}.${BASH_REMATCH[2]}"
+          else
+            echo "::error::Release tag '$RELEASE_TAG' is not a stable semantic version with the configured prefix"
+            exit 1
+          fi
+
+          git tag --force "$major" "$GITHUB_SHA"
+          git tag --force "$minor" "$GITHUB_SHA"
+          git push --atomic --force origin "refs/tags/$major" "refs/tags/$minor"
