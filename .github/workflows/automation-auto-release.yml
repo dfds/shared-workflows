@@ -23,7 +23,7 @@ jobs:
     outputs:
       semver: ${{ steps.auto-release-id.outputs.version }}
     steps:
-      - uses: rymndhng/release-on-push-action@master
+      - uses: rymndhng/release-on-push-action@v0.28.0
         id: auto-release-id
         with:
           bump_version_scheme: patch
