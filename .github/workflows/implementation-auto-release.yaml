@@ -1,6 +1,7 @@
 name: Auto release on merge (Implementation)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
