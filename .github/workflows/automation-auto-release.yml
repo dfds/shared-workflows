@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: ""
+      enable_major_minor_tag:
+        required: false
+        type: boolean
+        default: false
     outputs:
       semver:
         description: "The semantic version of the release"
@@ -28,3 +32,9 @@ jobs:
         with:
           bump_version_scheme: patch
           tag_prefix: ${{ inputs.tag_prefix }}
+      - name: Also produce major and minor version tags
+        if: ${{ inputs.enable_major_minor_tag && steps.auto-release-id.outputs.tag_name != '' }}
+        uses: haya14busa/action-update-semver@v1.5.1
+        with:
+          major_version_tag_only: false
+          tag: ${{ steps.auto-release-id.outputs.tag_name }}
