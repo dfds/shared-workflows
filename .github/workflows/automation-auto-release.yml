@@ -32,6 +32,9 @@ jobs:
         with:
           bump_version_scheme: patch
           tag_prefix: ${{ inputs.tag_prefix }}
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Also produce major and minor version tags
         if: ${{ inputs.enable_major_minor_tag && steps.auto-release-id.outputs.tag_name != '' }}
         uses: haya14busa/action-update-semver@v1.5.1
