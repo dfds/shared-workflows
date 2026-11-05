@@ -59,9 +59,9 @@ jobs:
           gh api repos/{owner}/{repo}/branches/{branch}/protection | \
             jq 'def names: if . then {users: [.users[]?.login], teams: [.teams[]?.slug], apps: [.apps[]?.slug]} else . end;
             {
-              required_pull_request_reviews: .required_pull_request_reviews | del(.url?)
+              required_pull_request_reviews: (.required_pull_request_reviews | del(.url?)
                 | if .dismissal_restrictions then .dismissal_restrictions |= names else . end
-                | if .bypass_pull_request_allowances then .bypass_pull_request_allowances |= names else . end,
+                | if .bypass_pull_request_allowances then .bypass_pull_request_allowances |= names else . end),
               enforce_admins: .enforce_admins.enabled,
               required_status_checks: .required_status_checks | del(.url, .contexts, .contexts_url),
               restrictions: .restrictions | names
@@ -106,9 +106,9 @@ jobs:
           gh api repos/{owner}/{repo}/branches/{branch}/protection | \
             jq 'def names: if . then {users: [.users[]?.login], teams: [.teams[]?.slug], apps: [.apps[]?.slug]} else . end;
             {
-              required_pull_request_reviews: .required_pull_request_reviews | del(.url?)
+              required_pull_request_reviews: (.required_pull_request_reviews | del(.url?)
                 | if .dismissal_restrictions then .dismissal_restrictions |= names else . end
-                | if .bypass_pull_request_allowances then .bypass_pull_request_allowances |= names else . end,
+                | if .bypass_pull_request_allowances then .bypass_pull_request_allowances |= names else . end),
               enforce_admins: .enforce_admins.enabled,
               required_status_checks: .required_status_checks | del(.url, .contexts, .contexts_url),
               restrictions: .restrictions | names
